@@ -104,6 +104,10 @@ body { font-family:'Montserrat',sans-serif; background:var(--primary); color:var
 
 .footer { background:var(--secondary); border-top:1px solid var(--border); padding:30px 5%; text-align:center; color:var(--text-dark); font-size:13px; margin-top:40px; }
 </style>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<base target="_blank">
 </head>
 <body>
 
@@ -271,35 +275,25 @@ body { font-family:'Montserrat',sans-serif; background:var(--primary); color:var
   <p>Auto Demy Admin Panel - Gestisci il tuo inventario auto</p>
 </footer>
 
+
+</body>
 <script>
-let cars = JSON.parse(localStorage.getItem('premiumCars')) || [];
+// ============================================================
+// FIREBASE ADMIN - Auto Demy
+// ============================================================
 
-// MIGRAZIONE: converte dati vecchi (nomi italiani) in nuovi (nomi inglesi)
-function migrateData() {
-  if (cars.length > 0 && cars[0].hasOwnProperty('prezzo')) {
-    cars = cars.map(car => ({
-      id: car.id,
-      brand: car.marca || car.brand || '',
-      model: car.modello || car.model || '',
-      price: car.prezzo || car.price || 0,
-      oldPrice: car.prezzoVecchio || car.oldPrice || null,
-      year: car.anno || car.year || 0,
-      km: car.km || 0,
-      fuel: car.carburante || car.fuel || '',
-      transmission: car.cambio || car.transmission || '',
-      color: car.colore || car.color || 'N/D',
-      power: car.potenza || car.power || 'N/D',
-      status: car.stato || car.status || 'disponibile',
-      description: car.descrizione || car.description || '',
-      image: car.image || (car.immagini ? car.immagini[0] : ''),
-      gallery: car.gallery || car.immagini || [],
-      dataAggiunta: car.dataAggiunta || new Date().toISOString()
-    }));
-    saveCars();
-  }
+const firebaseConfig = {
+  apiKey: "AIzaSyCSRgY7jdWgsYARBj_L5lGXgMwXJdbdrc4",
+  databaseURL: "https://autodemy-ec0d6-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId: "autodemy-ec0d6"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
 }
+const db = firebase.database();
 
-migrateData();
+let cars = [];
 let currentImages = [null, null, null];
 let currentFilter = 'all';
 
@@ -307,7 +301,6 @@ function handleImage(input, uploadId, index) {
   const file = input.files[0];
   if (!file) return;
 
-  // Limite 5MB, con compressione automatica
   if (file.size > 5 * 1024 * 1024) {
     showToast('Foto troppo grande! Max 5MB', 'error');
     return;
@@ -317,7 +310,6 @@ function handleImage(input, uploadId, index) {
   reader.onload = function(e) {
     const img = new Image();
     img.onload = function() {
-      // Comprimi automaticamente se > 1.5MB
       let quality = 0.9;
       let maxWidth = 1200;
       let maxHeight = 800;
@@ -360,7 +352,7 @@ function handleImage(input, uploadId, index) {
 
       const originalMB = (file.size / 1024 / 1024).toFixed(2);
       const compressedMB = ((compressed.length * 0.75) / 1024 / 1024).toFixed(2);
-      showToast(`Foto caricata! ${originalMB}MB → ${compressedMB}MB compressa`, 'success');
+      showToast(`Foto caricata! ${originalMB}MB → ${compressedMB}MB`, 'success');
     };
     img.src = e.target.result;
   };
@@ -374,8 +366,8 @@ document.getElementById('carForm').onsubmit = function(e) {
     return;
   }
   const editId = document.getElementById('editId').value;
+
   const carData = {
-    id: editId || Date.now().toString(),
     brand: document.getElementById('marca').value,
     model: document.getElementById('modello').value,
     price: parseInt(document.getElementById('prezzo').value),
@@ -392,23 +384,35 @@ document.getElementById('carForm').onsubmit = function(e) {
     gallery: currentImages.filter(img => img !== null),
     dataAggiunta: editId ? (cars.find(c => c.id === editId)?.dataAggiunta || new Date().toISOString()) : new Date().toISOString()
   };
-  if (editId) {
-    const idx = cars.findIndex(c => c.id === editId);
-    if (idx > -1) cars[idx] = carData;
-    showToast('Auto aggiornata!', 'success');
-  } else {
-    cars.push(carData);
-    showToast('Auto aggiunta!', 'success');
-  }
-  saveCars();
-  resetForm();
-  renderCarList();
-};
 
-function saveCars() {
-  localStorage.setItem('premiumCars', JSON.stringify(cars));
-  localStorage.setItem('premiumCars_public', JSON.stringify(cars));
-}
+  const btn = e.target.querySelector('button[type="submit"]');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvataggio...';
+  btn.disabled = true;
+
+  if (editId) {
+    db.ref('cars/' + editId).set(carData).then(() => {
+      showToast('Auto aggiornata!', 'success');
+      resetForm();
+    }).catch(err => {
+      showToast('Errore: ' + err.message, 'error');
+    }).finally(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    });
+  } else {
+    const newRef = db.ref('cars').push();
+    newRef.set(carData).then(() => {
+      showToast('Auto aggiunta!', 'success');
+      resetForm();
+    }).catch(err => {
+      showToast('Errore: ' + err.message, 'error');
+    }).finally(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    });
+  }
+};
 
 function resetForm() {
   document.getElementById('carForm').reset();
@@ -426,7 +430,7 @@ function renderCarList() {
   const search = document.getElementById('searchFilter').value.toLowerCase();
   const list = document.getElementById('carList');
   let filtered = cars.filter(car => {
-    const matchesSearch = (car.brand + ' ' + car.model).toLowerCase().includes(search);
+    const matchesSearch = ((car.brand || '') + ' ' + (car.model || '')).toLowerCase().includes(search);
     const matchesFilter = currentFilter === 'all' || car.status === currentFilter;
     return matchesSearch && matchesFilter;
   });
@@ -439,14 +443,14 @@ function renderCarList() {
   }
   list.innerHTML = filtered.map(car => `
     <div class="car-item">
-      <img src="${car.image}" alt="${car.brand}">
+      <img src="${car.image || (car.gallery ? car.gallery[0] : '')}" alt="${car.brand || ''}" onerror="this.src='https://via.placeholder.com/100x70?text=Auto'">
       <div class="car-info">
-        <h3>${car.brand} ${car.model}</h3>
-        <p>${car.year} &bull; ${car.km.toLocaleString('it-IT')} km &bull; ${car.fuel} &bull; ${car.transmission}</p>
+        <h3>${car.brand || ''} ${car.model || ''}</h3>
+        <p>${car.year || 'N/D'} &bull; ${car.km ? car.km.toLocaleString('it-IT') : '0'} km &bull; ${car.fuel || ''} &bull; ${car.transmission || ''}</p>
         ${car.status === 'venduta' ? '<span class="sold-badge"><i class="fas fa-times-circle"></i> Venduta</span>' : ''}
         ${car.status === 'riservata' ? '<span class="sold-badge reserved"><i class="fas fa-clock"></i> Riservata</span>' : ''}
       </div>
-      <div class="car-price">EUR ${car.price.toLocaleString('it-IT')}</div>
+      <div class="car-price">EUR ${car.price ? car.price.toLocaleString('it-IT') : '0'}</div>
       <div class="car-actions">
         <button class="edit-btn" onclick="editCar('${car.id}')"><i class="fas fa-edit"></i></button>
         <button class="delete-btn" onclick="deleteCar('${car.id}')"><i class="fas fa-trash"></i></button>
@@ -459,22 +463,23 @@ function editCar(id) {
   const car = cars.find(c => c.id === id);
   if (!car) return;
   document.getElementById('editId').value = car.id;
-  document.getElementById('marca').value = car.brand;
-  document.getElementById('modello').value = car.model;
-  document.getElementById('prezzo').value = car.price;
+  document.getElementById('marca').value = car.brand || '';
+  document.getElementById('modello').value = car.model || '';
+  document.getElementById('prezzo').value = car.price || '';
   document.getElementById('prezzoVecchio').value = car.oldPrice || '';
-  document.getElementById('anno').value = car.year;
-  document.getElementById('km').value = car.km;
-  document.getElementById('carburante').value = car.fuel;
-  document.getElementById('cambio').value = car.transmission;
+  document.getElementById('anno').value = car.year || '';
+  document.getElementById('km').value = car.km || '';
+  document.getElementById('carburante').value = car.fuel || '';
+  document.getElementById('cambio').value = car.transmission || '';
   document.getElementById('colore').value = car.color || '';
   document.getElementById('potenza').value = car.power || '';
-  document.getElementById('stato').value = car.status;
+  document.getElementById('stato').value = car.status || 'disponibile';
   document.getElementById('descrizione').value = car.description || '';
   document.getElementById('formTitle').textContent = 'Modifica Auto';
   currentImages = [null, null, null];
-  car.gallery.forEach((img, i) => {
-    if (i < 3) {
+  const gallery = car.gallery || [car.image] || [];
+  gallery.forEach((img, i) => {
+    if (i < 3 && img) {
       currentImages[i] = img;
       const area = document.getElementById('upload' + (i + 1));
       area.innerHTML = `<img src="${img}" style="max-width:100%;max-height:120px;border-radius:12px;"><br><small style="color:var(--text-muted);">Clicca per cambiare</small><input type="file" id="file${i+1}" accept="image/*" style="display:none" onchange="handleImage(this, 'upload${i+1}', ${i})">`;
@@ -486,10 +491,11 @@ function editCar(id) {
 
 function deleteCar(id) {
   if (!confirm('Sei sicuro di voler eliminare questa auto?')) return;
-  cars = cars.filter(c => c.id !== id);
-  saveCars();
-  renderCarList();
-  showToast('Auto eliminata', 'success');
+  db.ref('cars/' + id).remove().then(() => {
+    showToast('Auto eliminata', 'success');
+  }).catch(err => {
+    showToast('Errore: ' + err.message, 'error');
+  });
 }
 
 function setFilter(filter) {
@@ -507,10 +513,23 @@ function showToast(msg, type = 'success') {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+// Carica auto da Firebase in tempo reale
+db.ref('cars').on('value', (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    cars = Object.entries(data).map(([id, car]) => ({id, ...car}));
+  } else {
+    cars = [];
+  }
+  renderCarList();
+}, (error) => {
+  console.error("Errore Firebase:", error);
+  showToast('Errore connessione Firebase', 'error');
+});
+
 renderCarList();
 if (cars.length === 0) {
   showToast('Aggiungi la tua prima auto usando il form!', 'success');
 }
 </script>
-</body>
 </html>
