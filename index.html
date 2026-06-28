@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Auto Demy - Mercato San Severino</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -318,7 +318,278 @@ body { background: #f5f5f5; }
   padding: 8px 0;
 }
 .nav-link:hover, .nav-link.active { color: white; }
+
+
+/* ========== MOBILE FIXES ========== */
+
+/* Prevent zoom on double-tap */
+* { touch-action: manipulation; }
+img, video { touch-action: manipulation; -webkit-user-drag: none; }
+
+/* Header mobile - FIXED dark background */
+@media (max-width: 768px) {
+  .header-top {
+    background: #132848 !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 12px 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .header-nav {
+    display: none;
+  }
+
+  /* Hero fixes */
+  #hero-3d {
+    min-height: 100vh;
+    height: auto;
+    padding-top: 70px;
+  }
+  .hero-content {
+    padding: 20px 20px 40px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .hero-title {
+    font-size: clamp(28px, 8vw, 48px);
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  .hero-subtitle {
+    font-size: 14px;
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+  .hero-badge {
+    font-size: 10px;
+    padding: 6px 14px;
+    margin-bottom: 16px;
+  }
+  .hero-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn-primary-red, .btn-outline {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 13px;
+    justify-content: center;
+  }
+  .search-bar-hero {
+    padding: 16px;
+    margin-top: 24px;
+  }
+  .search-bar-hero select, .search-bar-hero input {
+    padding: 12px 14px;
+    font-size: 16px; /* Prevent iOS zoom on input focus */
+    border-radius: 8px;
+  }
+  .search-bar-hero button {
+    padding: 12px 20px;
+    width: 100%;
+  }
+  .scroll-indicator {
+    display: none;
+  }
+
+  /* Card grid */
+  #cars-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .car-card {
+    border-radius: 12px;
+  }
+
+  /* Modal mobile - fullscreen bottom sheet */
+  #car-modal > div {
+    border-radius: 16px 16px 0 0 !important;
+    max-height: 95vh !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #car-modal {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  #modal-main-img {
+    height: 240px !important;
+    object-fit: cover;
+  }
+
+  /* Hero logo */
+  .logo-header {
+    height: 32px;
+  }
+
+  /* Brands section */
+  .brand-circle {
+    width: 60px;
+    height: 60px;
+  }
+  .brand-circle img {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Parallax section */
+  .parallax-section h2 {
+    font-size: 28px;
+  }
+  .parallax-section p {
+    font-size: 16px;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 40px 0 20px;
+  }
+  .footer .grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+  }
+}
+
+/* Lightbox styles */
+#lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+#lightbox.active {
+  display: flex;
+}
+#lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+#lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+}
+#lightbox-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+#lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 14px;
+  background: rgba(0,0,0,0.5);
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+#lightbox-prev, #lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+#lightbox-prev:hover, #lightbox-next:hover {
+  background: rgba(255,255,255,0.3);
+}
+#lightbox-prev { left: 16px; }
+#lightbox-next { right: 16px; }
+
+/* Mobile menu */
+#mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9998;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#mobile-menu.active {
+  display: block;
+  opacity: 1;
+}
+#mobile-menu-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  background: #132848;
+  padding: 80px 24px 24px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+}
+#mobile-menu.active #mobile-menu-panel {
+  transform: translateX(0);
+}
+#mobile-menu-panel a {
+  display: block;
+  color: white;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+#mobile-menu-panel a:hover {
+  color: #f5c518;
+}
+
+/* Prevent text size adjustment on orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Smooth scrolling for iOS */
+body {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+}
+
 </style>
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
@@ -350,7 +621,7 @@ body { background: #f5f5f5; }
             Accedi
           </a>
         </div>
-        <button class="md:hidden text-white text-xl"><i class="fas fa-bars"></i></button>
+        <button class="md:hidden text-white text-xl" onclick="openMobileMenu()" id="hamburger-btn"><i class="fas fa-bars"></i></button>
       </div>
     </div>
   </div>
@@ -776,7 +1047,7 @@ function applyFilters() {
     if (transmission && car.transmission !== transmission) return false;
     if (km && carKm > parseInt(km)) return false;
     if (status && car.status !== status) return false;
-    if (searchBrand && car.brand !== searchBrand) return false;
+    if (searchBrand && (!car.brand || car.brand.toLowerCase() !== searchBrand.toLowerCase())) return false;
     if (searchModel && !car.model?.toLowerCase().includes(searchModel.toLowerCase())) return false;
     if (searchPrice && carPrice > parseFloat(searchPrice)) return false;
     return true;
@@ -856,15 +1127,17 @@ function toggleHeart(btn) {
 function openModal(carId) {
   const car = allCars.find(c => c.id === carId);
   if (!car) return;
+  window.currentModalImages = car.gallery && car.gallery.length > 0 ? car.gallery : [(car.image || 'https://via.placeholder.com/800x500?text=No+Image')];
+  window.currentModalImageIndex = 0;
   const modal = document.getElementById('car-modal');
   const content = document.getElementById('modal-content');
   const images = car.gallery && car.gallery.length > 0 ? car.gallery : ['https://via.placeholder.com/800x500?text=No+Image'];
-  const thumbs = images.map((img, i) => `<img src="${img}" class="w-20 h-16 object-cover rounded-lg cursor-pointer border-2 ${i===0?'border-[#f5c518]':'border-transparent'} hover:border-[#f5c518]" onclick="document.getElementById('modal-main-img').src='${img}'">`).join('');
+  const thumbs = images.map((img, i) => `<img src="${img}" class="w-20 h-16 object-cover rounded-lg cursor-pointer border-2 ${i===0?'border-[#f5c518]':'border-transparent'} hover:border-[#f5c518]" onclick="window.currentModalImageIndex=${i};openLightbox(window.currentModalImages, ${i})" style="touch-action:manipulation">`).join('');
   const statusBadge = car.status === 'nuovo' ? '<span class="badge-new">Nuovo</span>' : car.status === 'riservata' ? '<span class="badge-reserved">Riservata</span>' : car.status === 'venduta' ? '<span class="badge-sold">Venduta</span>' : '<span class="badge-used">Usato</span>';
   content.innerHTML = `
     <div class="grid md:grid-cols-2 gap-0">
       <div class="p-6">
-        <img id="modal-main-img" src="${images[0]}" class="w-full h-72 object-cover rounded-xl mb-4">
+        <img id="modal-main-img" src="${images[0]}" class="w-full h-72 object-cover rounded-xl mb-4 cursor-zoom-in" onclick="if(window.currentModalImages){openLightbox(window.currentModalImages, window.currentModalImageIndex||0)}" style="touch-action:manipulation">
         <div class="flex gap-2 overflow-x-auto">${thumbs}</div>
       </div>
       <div class="p-6 md:border-l border-gray-100">
@@ -894,11 +1167,37 @@ function openModal(carId) {
 
 function closeModal() {
   const modal = document.getElementById('car-modal');
-  modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = '';
+  modal.classList.add('hidden'); modal.classList.remove('flex');
+  var lb = document.getElementById('lightbox');
+  var aiPanel = document.getElementById('ai-chat-panel');
+  if ((!lb || !lb.classList.contains('active')) && (!aiPanel || !aiPanel.classList.contains('open'))) {
+    document.body.style.overflow = '';
+  }
 }
 document.getElementById('car-modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
 </script>
 
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+  <button id="lightbox-prev" onclick="lightboxPrev()"><i class="fas fa-chevron-left"></i></button>
+  <img id="lightbox-img" src="" alt="">
+  <button id="lightbox-next" onclick="lightboxNext()"><i class="fas fa-chevron-right"></i></button>
+  <div id="lightbox-counter"></div>
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu" onclick="closeMobileMenu(event)">
+  <div id="mobile-menu-panel" onclick="event.stopPropagation()">
+    <a href="#" onclick="closeMobileMenu(); document.getElementById('hero-3d').scrollIntoView({behavior:'smooth'}); return false;">Home</a>
+    <a href="#" onclick="closeMobileMenu(); document.getElementById('cars-section').scrollIntoView({behavior:'smooth'}); return false;">Esplora Auto</a>
+    <a href="#" onclick="closeMobileMenu(); document.getElementById('parallax-vendi').scrollIntoView({behavior:'smooth'}); return false;">Vendi Auto</a>
+    <a href="#" onclick="closeMobileMenu(); return false;">Noleggio Eventi</a>
+    <a href="#" onclick="closeMobileMenu(); return false;">Chi Siamo</a>
+    <a href="admin.html" onclick="closeMobileMenu()">Accedi (Admin)</a>
+  </div>
+</div>
 
 <!-- ==================== AI CHATBOT WIDGET ==================== -->
 <style>
@@ -1157,10 +1456,42 @@ document.getElementById('car-modal').addEventListener('click', (e) => { if (e.ta
   border-radius: 10px;
   margin-bottom: 8px;
 }
+/* Chatbot Mobile */
+@media (max-width: 768px) {
+  #ai-chat-panel {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    z-index: 10001 !important;
+  }
+  #ai-chat-button {
+    width: 50px !important;
+    height: 50px !important;
+    bottom: 16px !important;
+    right: 16px !important;
+    z-index: 10000 !important;
+  }
+  #ai-chat-button i {
+    font-size: 20px !important;
+  }
+  .ai-chat-messages {
+    max-height: calc(100vh - 160px) !important;
+  }
+  .ai-chat-input {
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+}
 @media (max-width: 480px) {
   #ai-chat-panel {
-    width: calc(100vw - 48px);
-    height: calc(100vh - 120px);
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
   }
 }
 </style>
@@ -1198,6 +1529,137 @@ document.getElementById('car-modal').addEventListener('click', (e) => { if (e.ta
 
 <script>
 
+
+
+// ===== MOBILE MENU =====
+function openMobileMenu() {
+  document.getElementById('mobile-menu').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileMenu(e) {
+  document.getElementById('mobile-menu').classList.remove('active');
+  var carModal = document.getElementById('car-modal');
+  var lightbox = document.getElementById('lightbox');
+  if ((!carModal || !carModal.classList.contains('flex')) && (!lightbox || !lightbox.classList.contains('active'))) {
+    document.body.style.overflow = '';
+  }
+}
+
+// ===== LIGHTBOX =====
+var lightboxImages = [];
+var lightboxIndex = 0;
+var lightboxScale = 1;
+var lightboxInitialPinchDistance = 0;
+var lightboxInitialScale = 1;
+var lbTouchStartX = 0;
+var lbTouchStartY = 0;
+var lbTouchStartTime = 0;
+
+function openLightbox(images, index) {
+  lightboxImages = images;
+  lightboxIndex = index;
+  lightboxScale = 1;
+  var lb = document.getElementById('lightbox');
+  var img = document.getElementById('lightbox-img');
+  if (lb && img) {
+    img.src = images[index];
+    img.style.transform = 'scale(1)';
+    document.getElementById('lightbox-counter').textContent = (index + 1) + ' / ' + images.length;
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+function closeLightbox() {
+  var lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('active');
+  lightboxScale = 1;
+  var carModal = document.getElementById('car-modal');
+  if ((!carModal || !carModal.classList.contains('flex'))) {
+    document.body.style.overflow = '';
+  }
+}
+function lightboxPrev() {
+  if (lightboxImages.length <= 1) return;
+  lightboxIndex = (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
+  document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
+  document.getElementById('lightbox-img').style.transform = 'scale(1)';
+  lightboxScale = 1;
+  document.getElementById('lightbox-counter').textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+}
+function lightboxNext() {
+  if (lightboxImages.length <= 1) return;
+  lightboxIndex = (lightboxIndex + 1) % lightboxImages.length;
+  document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
+  document.getElementById('lightbox-img').style.transform = 'scale(1)';
+  lightboxScale = 1;
+  document.getElementById('lightbox-counter').textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+}
+
+// Swipe handling for lightbox
+document.addEventListener('DOMContentLoaded', function() {
+  var lb = document.getElementById('lightbox');
+  if (!lb) return;
+
+  lb.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 1) {
+      lbTouchStartX = e.touches[0].clientX;
+      lbTouchStartY = e.touches[0].clientY;
+      lbTouchStartTime = Date.now();
+    } else if (e.touches.length === 2) {
+      e.preventDefault();
+      lightboxInitialPinchDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      lightboxInitialScale = lightboxScale;
+    }
+  }, {passive: false});
+
+  lb.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      var distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      lightboxScale = Math.min(Math.max(lightboxInitialScale * (distance / lightboxInitialPinchDistance), 1), 4);
+      document.getElementById('lightbox-img').style.transform = 'scale(' + lightboxScale + ')';
+    }
+  }, {passive: false});
+
+  lb.addEventListener('touchend', function(e) {
+    if (lbTouchStartX === 0) return;
+    var dx = e.changedTouches[0].clientX - lbTouchStartX;
+    var dy = e.changedTouches[0].clientY - lbTouchStartY;
+    var dt = Date.now() - lbTouchStartTime;
+    var absDx = Math.abs(dx);
+    var absDy = Math.abs(dy);
+    // Swipe horizontal
+    if (absDx > 50 && absDx > absDy && dt < 300) {
+      if (dx > 0) lightboxPrev();
+      else lightboxNext();
+    }
+    // Tap on background to close
+    if (e.target.id === 'lightbox' && absDx < 10 && absDy < 10 && dt < 200) {
+      closeLightbox();
+    }
+    lbTouchStartX = 0;
+  });
+});
+
+// Close with Escape + Arrow keys
+document.addEventListener('keydown', function(e) {
+  var lb = document.getElementById('lightbox');
+  var carModal = document.getElementById('car-modal');
+  var mobileMenu = document.getElementById('mobile-menu');
+  if (e.key === 'Escape') {
+    if (lb && lb.classList.contains('active')) closeLightbox();
+    if (carModal && carModal.classList.contains('flex')) closeModal();
+    if (mobileMenu && mobileMenu.classList.contains('active')) closeMobileMenu();
+  }
+  if (e.key === 'ArrowLeft' && lb && lb.classList.contains('active')) lightboxPrev();
+  if (e.key === 'ArrowRight' && lb && lb.classList.contains('active')) lightboxNext();
+});
 
 // ==================== AI CHATBOT LOGIC ====================
 (function() {
