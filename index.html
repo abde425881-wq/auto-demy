@@ -320,6 +320,7 @@ body { background: #f5f5f5; }
 .nav-link:hover, .nav-link.active { color: white; }
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body class="min-h-screen">
 
@@ -896,6 +897,922 @@ function closeModal() {
   modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = '';
 }
 document.getElementById('car-modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+</script>
+
+
+<!-- ==================== AI CHATBOT WIDGET ==================== -->
+<style>
+/* Chatbot Widget Styles */
+#ai-chat-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  font-family: 'Inter', sans-serif;
+}
+#ai-chat-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #f5c518;
+  color: #132848;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(245, 197, 24, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+#ai-chat-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(245, 197, 24, 0.5);
+}
+#ai-chat-button .ai-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #f5c518;
+  opacity: 0.4;
+  animation: ai-pulse 2s infinite;
+}
+@keyframes ai-pulse {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+#ai-chat-panel {
+  position: absolute;
+  bottom: 76px;
+  right: 0;
+  width: 380px;
+  max-width: calc(100vw - 48px);
+  height: 520px;
+  max-height: calc(100vh - 120px);
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: ai-slide-up 0.3s ease;
+}
+@keyframes ai-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#ai-chat-panel.open {
+  display: flex;
+}
+.ai-chat-header {
+  background: #132848;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ai-chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ai-chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f5c518;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.ai-chat-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+.ai-chat-subtitle {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+}
+.ai-chat-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.ai-chat-close:hover {
+  background: rgba(255,255,255,0.1);
+}
+.ai-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8f9fa;
+}
+.ai-message {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  animation: ai-fade-in 0.3s ease;
+}
+@keyframes ai-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ai-message-bot {
+  align-self: flex-start;
+  background: white;
+  color: #333;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.ai-message-user {
+  align-self: flex-end;
+  background: #132848;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+.ai-message-error {
+  align-self: flex-start;
+  background: #fff3cd;
+  color: #856404;
+  border-bottom-left-radius: 4px;
+}
+.ai-message-typing {
+  align-self: flex-start;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.ai-typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #aaa;
+  border-radius: 50%;
+  animation: ai-typing 1.4s infinite;
+}
+.ai-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ai-typing {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+.ai-quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 12px;
+  background: #f8f9fa;
+}
+.ai-quick-btn {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #132848;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.ai-quick-btn:hover {
+  background: #f5c518;
+  border-color: #f5c518;
+  color: #132848;
+}
+.ai-chat-input-area {
+  padding: 12px 16px;
+  background: white;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ai-chat-input {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  padding: 10px 16px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ai-chat-input:focus {
+  border-color: #f5c518;
+}
+.ai-chat-send {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f5c518;
+  color: #132848;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.ai-chat-send:hover {
+  background: #d4a50b;
+}
+.ai-chat-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ai-status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.15);
+}
+.ai-status.online { background: rgba(40, 167, 69, 0.2); color: #28a745; }
+.ai-status.offline { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
+.ai-badge-context {
+  display: inline-block;
+  background: #f5c518;
+  color: #132848;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+@media (max-width: 480px) {
+  #ai-chat-panel {
+    width: calc(100vw - 48px);
+    height: calc(100vh - 120px);
+  }
+}
+</style>
+
+<div id="ai-chat-widget">
+  <div id="ai-chat-panel">
+    <div class="ai-chat-header">
+      <div class="ai-chat-header-left">
+        <div class="ai-chat-avatar">🤖</div>
+        <div>
+          <div class="ai-chat-title">Assistente Auto Demy</div>
+          <div class="ai-chat-subtitle">
+            <span id="ai-status-badge" class="ai-status online">Online</span>
+          </div>
+        </div>
+      </div>
+      <button class="ai-chat-close" onclick="aiToggleChat()" title="Chiudi">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="ai-chat-messages" id="ai-chat-messages"></div>
+    <div class="ai-quick-replies" id="ai-quick-replies"></div>
+    <div class="ai-chat-input-area">
+      <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Scrivi una domanda..." onkeydown="if(event.key==='Enter')aiSendMessage()">
+      <button id="ai-chat-send" class="ai-chat-send" onclick="aiSendMessage()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+  <button id="ai-chat-button" onclick="aiToggleChat()" title="Chiedi all'Assistente AI">
+    <span class="ai-pulse"></span>
+    <i class="fas fa-robot" style="position:relative;z-index:1;"></i>
+  </button>
+</div>
+
+<script>
+
+
+// ==================== AI CHATBOT LOGIC ====================
+(function() {
+  'use strict';
+
+  const AI_CONFIG = {
+    apiKey: 'IHhLNDgydqCP6JLGaU5AR2Porq7VHigJecc',
+    model: 'mistral-tiny',
+    endpoint: 'https://api.mistral.ai/v1/chat/completions',
+    maxHistory: 10
+  };
+
+  let aiChatOpen = false;
+  let aiConversationHistory = [];
+  let aiCurrentCarContext = null;
+  let aiIsTyping = false;
+  let aiApiAvailable = null;
+
+  const AI_QUICK_REPLIES = [
+    "Quali auto avete?",
+    "Orari di apertura?",
+    "Dove siete?",
+    "Finanziamenti?",
+    "Valutazione usato?"
+  ];
+
+  // ===== UTILITA: Trova auto nel catalogo dal testo =====
+  function aiFindCarInCatalog(text) {
+    if (typeof allCars === 'undefined' || !allCars || allCars.length === 0) return null;
+
+    const lowerText = text.toLowerCase();
+
+    // Cerca match esatto brand + modello
+    for (const car of allCars) {
+      if (!car.brand || !car.model) continue;
+      const carFull = (car.brand + ' ' + car.model).toLowerCase();
+      const carShort = car.model.toLowerCase();
+
+      if (lowerText.includes(carFull) || lowerText.includes(carShort)) {
+        return car;
+      }
+    }
+
+    // Cerca solo per brand
+    const brands = [...new Set(allCars.map(c => c.brand).filter(Boolean))];
+    for (const brand of brands) {
+      if (lowerText.includes(brand.toLowerCase())) {
+        // Trova l'auto più recente di quel brand
+        const brandCars = allCars.filter(c => c.brand === brand);
+        return brandCars[0];
+      }
+    }
+
+    return null;
+  }
+
+  // ===== UTILITA: Ottieni auto di contesto (corrente o trovata nel testo) =====
+  function aiGetContextCar(message) {
+    if (aiCurrentCarContext) return aiCurrentCarContext;
+    if (message) return aiFindCarInCatalog(message);
+    return null;
+  }
+
+  // ===== RISPOSTE LOCALI INTELLIGENTI =====
+  const AI_LOCAL_RESPONSES = [
+    {
+      patterns: ['ciao', 'salve', 'buongiorno', 'buonasera', 'hey', 'hi', 'hello', 'ehi'],
+      response: function() {
+        const greetings = [
+          "Ciao! 👋 Sono l'assistente virtuale di Auto Demy. Come posso aiutarti oggi?",
+          "Buongiorno! 🚗 Sono qui per aiutarti a trovare l'auto perfetta. Cosa cerchi?",
+          "Ciao! Benvenuto su Auto Demy. Dimmi cosa ti serve!"
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+      }
+    },
+    {
+      patterns: ['orari', 'quando siete aperti', 'apertura', 'chiuso', 'chiudete', 'che ore'],
+      response: "📅 **Orari di apertura:**\n\n• Lun-Ven: 9:00 - 19:00\n• Sabato: 9:00 - 13:00\n• Domenica: **Chiuso**\n\nPuoi passare in qualsiasi momento durante gli orari di apertura, senza appuntamento!"
+    },
+    {
+      patterns: ['dove', 'ubicazione', 'indirizzo', 'posizione', 'trovare', 'arrivare', 'siete ubicati'],
+      response: "📍 Siamo a **Mercato San Severino (SA)**.\n\nVieni a trovarci in concessionaria! Siamo facilmente raggiungibili e abbiamo ampio parcheggio.\n\nTi aspettiamo! 🚗"
+    },
+    {
+      patterns: ['finanziamento', 'rate', 'leasing', 'pagamento', 'prestito', 'taeg', 'tan', 'anticipo'],
+      response: "💰 **Finanziamenti personalizzati:**\n\nOffriamo diverse soluzioni di finanziamento su misura per te:\n\n• Rate personalizzabili\n• Anticipo zero o ridotto\n• Durata fino a 84 mesi\n• Leasing per privati e aziende\n\n**Contattaci per una consulenza gratuita!** 📞"
+    },
+    {
+      patterns: ['valutazione', 'permute', 'scambio', 'dare la mia', 'usato', 'vendo', 'permutare'],
+      response: "🔄 **Valutazione e Permute:**\n\n• Valutazione **gratuita** del tuo usato\n• Stima accurata in concessionaria\n• Permuta immediata con nuova auto\n• Ritiro usato con pagamento immediato\n\nPorta la tua auto per una stima senza impegno!"
+    },
+    {
+      patterns: ['garanzia', 'copertura', 'assicurazione', 'protezione'],
+      response: "🛡️ **Garanzie:**\n\nTutte le nostre auto sono coperte da garanzia. La durata varia in base al veicolo:\n\n• Auto nuove: garanzia costruttore\n• Auto usate: garanzia concessionaria minimo 12 mesi\n• Estensioni garanzia disponibili\n\nContattaci per i dettagli specifici!"
+    },
+    {
+      patterns: ['noleggio', 'affitto', 'rent', 'evento', 'matrimonio'],
+      response: "🎩 **Noleggio Auto per Eventi:**\n\nAuto di prestigio per occasioni speciali:\n\n• Matrimoni\n• Cerimonie\n• Eventi aziendali\n• Servizi fotografici\n\nContattaci per un preventivo personalizzato! 📞"
+    },
+    {
+      patterns: ['contatti', 'telefono', 'email', 'mail', 'numero', 'chiamare', 'scrivere', 'whatsapp'],
+      response: "📞 **Contatti Auto Demy:**\n\n• 📧 Email: info@autodemy.it\n• 📍 Indirizzo: Mercato San Severino (SA)\n• 🕐 Orari: Lun-Ven 9-19, Sab 9-13\n\nPuoi anche passare direttamente in concessionaria!"
+    },
+    {
+      patterns: ['grazie', 'thanks', 'grazie mille', 'ottimo', 'perfetto', 'bravo'],
+      response: "Grazie a te! 😊 Se hai altre domande, sono sempre qui per aiutarti. Buona giornata e buona ricerca dell'auto perfetta! 🚗✨"
+    },
+    {
+      patterns: ['prezzo', 'costa', 'quanto costa', 'quanto e', 'euro', 'soldi', 'economica', 'costoso', 'prezzi'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car) {
+          return "💰 Il prezzo della **" + car.brand + " " + car.model + "** e di **€" + parseInt(car.price).toLocaleString() + "**.\n\n" +
+            (car.oldPrice ? "💵 Prezzo originale: ~~€" + parseInt(car.oldPrice).toLocaleString() + "~~\n" : "") +
+            "\nIl prezzo e trattabile in concessionaria. Possiamo valutare permute e offrirti soluzioni di finanziamento personalizzate!\n\nVuoi prenotare un test drive? 🚗";
+        }
+        return "💰 I prezzi variano in base al modello. Nel nostro catalogo trovi auto a partire da pochi migliaia di euro fino a vetture di lusso.\n\n" +
+          "**Dimmi quale auto ti interessa** (es. 'quanto costa la BMW X3?') e ti dico il prezzo esatto!\n\nOppure visita il catalogo per vedere tutti i prezzi aggiornati. 😉";
+      }
+    },
+    {
+      patterns: ['km', 'chilometri', 'chilometraggio', 'percorsi', 'quanti km'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car && car.km) {
+          return "🛣️ La **" + car.brand + " " + car.model + "** ha **" + parseInt(car.km).toLocaleString() + " km** percorsi.\n\nVuoi maggiori dettagli su quest'auto?";
+        }
+        return "🛣️ Le auto nel nostro catalogo hanno chilometraggi diversi. Puoi filtrare per KM massimi nella barra di ricerca laterale!\n\nDimmi quale auto ti interessa e ti dico i km esatti.";
+      }
+    },
+    {
+      patterns: ['carburante', 'benzina', 'diesel', 'ibrida', 'elettrica', 'gpl', 'metano', 'alimentazione'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car && car.fuel) {
+          return "⛽ La **" + car.brand + " " + car.model + "** utilizza **" + car.fuel + "**.\n\nHai domande sui consumi o sui costi di manutenzione?";
+        }
+        return "⛽ Nel nostro catalogo trovi auto con tutti i tipi di alimentazione:\n\n• Benzina\n• Diesel\n• Ibride\n• Elettriche\n• GPL\n• Metano\n\nUsa i filtri per trovare quella che fa per te!";
+      }
+    },
+    {
+      patterns: ['cambio', 'manuale', 'automatico', 'sequenziale', 'trasmissione'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car && car.transmission) {
+          return "⚙️ La **" + car.brand + " " + car.model + "** ha cambio **" + car.transmission + "**.";
+        }
+        return "⚙️ Abbiamo auto con cambio manuale, automatico e sequenziale. Puoi filtrare per tipo di cambio nella sidebar!";
+      }
+    },
+    {
+      patterns: ['test drive', 'prova', 'guidare', 'guido', 'prova su strada', 'provare'],
+      response: "🚗 **Prenota un Test Drive!**\n\nPuoi provare l'auto che ti interessa direttamente in concessionaria.\n\n• Senza impegno\n• Con accompagnatore esperto\n• Durata circa 30 minuti\n\n**Passa in concessionaria o chiamaci per prenotare!** 📞"
+    },
+    {
+      patterns: ['disponibile', 'disponibilita', "ce l'avete", 'in pronta', 'subito', 'arrivo'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car) {
+          return "✅ La **" + car.brand + " " + car.model + "** e disponibile!\n\n" +
+            "Ti consiglio di passare in concessionaria per vederla dal vivo e fare un test drive. Le auto di nostro interesse vanno via velocemente! 🏃‍♂️\n\nVuoi prenotare una visita?";
+        }
+        return aiGetCarsFallback();
+      }
+    },
+    {
+      patterns: ['dettagli', 'specifiche', 'tecnica', 'scheda', 'info', 'informazioni', 'caratteristiche'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car) {
+          let r = "📋 **Dettagli " + car.brand + " " + car.model + ":**\n\n";
+          if (car.year) r += "📅 Anno: " + car.year + "\n";
+          if (car.price) r += "💰 Prezzo: €" + parseInt(car.price).toLocaleString() + "\n";
+          if (car.km) r += "🛣️ KM: " + parseInt(car.km).toLocaleString() + "\n";
+          if (car.fuel) r += "⛽ Carburante: " + car.fuel + "\n";
+          if (car.transmission) r += "⚙️ Cambio: " + car.transmission + "\n";
+          if (car.power) r += "🔋 Potenza: " + car.power + "\n";
+          if (car.color) r += "🎨 Colore: " + car.color + "\n";
+          if (car.description) r += "\n📝 " + car.description.substring(0, 200) + (car.description.length > 200 ? "..." : "");
+          r += "\n\nVuoi prenotare un test drive o avere maggiori informazioni?";
+          return r;
+        }
+        return "📋 Clicca su qualsiasi auto nel catalogo per vedere tutti i dettagli tecnici, foto e specifiche complete!\n\nOppure dimmi quale auto ti interessa (es. 'dettagli BMW X3').";
+      }
+    },
+    {
+      patterns: ['auto', 'macchina', 'macchine', 'vetture', 'catalogo', 'disponibili', 'avete', 'lista', 'che auto'],
+      response: function() { return aiGetCarsFallback(); }
+    },
+    {
+      patterns: ['nuovo', 'nuova', 'km 0', 'km0', 'zero'],
+      response: "🆕 **Auto Nuove e KM 0:**\n\nNel nostro catalogo trovi sia auto nuove che KM 0 a prezzi vantaggiosi. Le auto KM 0 sono praticamente nuove ma a prezzi ridotti!\n\nUsa il filtro 'Stato' nella sidebar per vedere solo nuove o KM 0."
+    },
+    {
+      patterns: ['usato', 'usata', 'seconda mano'],
+      response: "🚗 **Auto Usate:**\n\nTutte le nostre auto usate sono:\n\n• Controllate e garantite\n• Con storico manutenzione\n• A prezzi competitivi\n• Con possibilita di permuta\n\nFiltra per 'Usato' nella sidebar!"
+    },
+    {
+      patterns: ['elettrica', 'ev', 'tesla', 'ricarica', 'batteria'],
+      response: "🔋 **Auto Elettriche:**\n\nNel nostro catalogo trovi auto elettriche di ultima generazione. Vantaggi:\n\n• Zero emissioni\n• Bassi costi di manutenzione\n• Incentivi statali disponibili\n• Ricarica domestica e pubblica\n\nFiltra per 'Elettrica' nel menu Carburante!"
+    },
+    {
+      patterns: ['bmw', 'mercedes', 'audi', 'volkswagen', 'fiat', 'ford', 'toyota', 'jeep', 'peugeot', 'alfa', 'maserati'],
+      response: function(msg) {
+        const lowerMsg = msg.toLowerCase();
+        const car = aiFindCarInCatalog(msg);
+
+        if (car) {
+          return "🏷️ **" + car.brand + " " + car.model + "**\n\n" +
+            "💰 €" + parseInt(car.price).toLocaleString() + "\n" +
+            "📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n" +
+            "⛽ " + (car.fuel || 'N/D') + " | ⚙️ " + (car.transmission || 'N/D') + "\n\n" +
+            "Clicca sulla card nel catalogo per tutti i dettagli! 👆";
+        }
+
+        const brands = ['BMW', 'Mercedes', 'Audi', 'Volkswagen', 'Fiat', 'Ford', 'Toyota', 'Jeep', 'Peugeot', 'Alfa', 'Maserati'];
+        const found = brands.find(b => lowerMsg.includes(b.toLowerCase()));
+        if (found && typeof allCars !== 'undefined' && allCars.length > 0) {
+          const brandCars = allCars.filter(c => c.brand && c.brand.toLowerCase() === found.toLowerCase());
+          if (brandCars.length > 0) {
+            let r = "🏷️ **Auto " + found + " disponibili:**\n\n";
+            brandCars.slice(0, 3).forEach((c, i) => {
+              r += (i+1) + ". **" + c.brand + " " + c.model + "** (" + (c.year || 'N/D') + ") - €" + parseInt(c.price).toLocaleString() + "\n";
+            });
+            if (brandCars.length > 3) r += "\n...e altre " + (brandCars.length - 3) + "!";
+            r += "\n\nClicca sul catalogo per vederle tutte! 👆";
+            return r;
+          }
+        }
+        return "🏷️ Abbiamo diverse auto di questa marca nel catalogo! Usa i filtri o cerca direttamente per marca.";
+      }
+    },
+    {
+      patterns: ['aiuto', 'help', 'come funziona', 'cosa fai', 'chi sei', 'cosa sai fare'],
+      response: "🤖 **Cosa posso fare per te:**\n\n• 🚗 Mostrarti le auto disponibili nel catalogo\n• 💰 Rispondere a domande su prezzi e specifiche\n• 📍 Informarti su orari, ubicazione e contatti\n• 🔄 Spiegarti i servizi di finanziamento e permuta\n• 🛡️ Aiutarti con la valutazione del tuo usato\n\n**Prova a chiedermi:**\n• 'Quali auto avete?'\n• 'Quanto costa la BMW X3?'\n• 'Orari di apertura?'\n• 'Finanziamenti?'"
+    },
+    {
+      patterns: ['colore', 'colori', 'verniciatura'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car && car.color) {
+          return "🎨 La **" + car.brand + " " + car.model + "** e di colore **" + car.color + "**.";
+        }
+        return "🎨 Nel nostro catalogo trovi auto di vari colori. Clicca su un'auto per vedere le foto e i dettagli!";
+      }
+    },
+    {
+      patterns: ['potenza', 'cv', 'cavalli', 'kw'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car && car.power) {
+          return "🔋 La **" + car.brand + " " + car.model + "** ha una potenza di **" + car.power + "**.";
+        }
+        return "🔋 Le potenze variano in base al modello. Clicca su un'auto per vedere le specifiche complete!";
+      }
+    },
+    {
+      patterns: ['anno', 'immatricolazione', 'quando e'],
+      response: function(msg) {
+        const car = aiGetContextCar(msg);
+        if (car && car.year) {
+          return "📅 La **" + car.brand + " " + car.model + "** e del **" + car.year + "**.";
+        }
+        return "📅 Puoi filtrare le auto per anno nella sidebar a sinistra!";
+      }
+    }
+  ];
+
+  // Fallback catalogo
+  function aiGetCarsFallback() {
+    if (typeof allCars === 'undefined' || !allCars || allCars.length === 0) {
+      return "🚗 Al momento il catalogo non e caricato.\n\nNel nostro parco auto trovi sempre una vasta selezione di auto nuove, usate garantite, KM 0 e auto elettriche.\n\n**Passa in concessionaria a Mercato San Severino** per vedere tutte le auto disponibili! 📍";
+    }
+
+    const available = allCars.filter(c => c.status !== 'venduta').slice(0, 5);
+    if (available.length === 0) {
+      return "🚗 Al momento non ci sono auto disponibili nel catalogo online.\n\nTi consiglio di contattarci o passare in concessionaria per conoscere le prossime arrivi! 📞";
+    }
+
+    let response = "🚗 **Auto disponibili nel catalogo:**\n\n";
+    available.forEach((car, i) => {
+      response += (i+1) + ". **" + car.brand + " " + car.model + "**\n";
+      response += "   💰 €" + parseInt(car.price).toLocaleString() + " | 📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n\n";
+    });
+
+    response += "Totale auto: **" + allCars.length + "**\n\n";
+    response += "Clicca su un'auto per i dettagli completi! 👆";
+
+    return response;
+  }
+
+  // Motore risposta
+  function aiGetLocalResponse(message) {
+    const lowerMsg = message.toLowerCase();
+
+    for (const item of AI_LOCAL_RESPONSES) {
+      for (const pattern of item.patterns) {
+        if (lowerMsg.includes(pattern.toLowerCase())) {
+          if (typeof item.response === 'function') {
+            return item.response(message);
+          }
+          return item.response;
+        }
+      }
+    }
+
+    // Prova a trovare un'auto nel messaggio
+    const car = aiFindCarInCatalog(message);
+    if (car) {
+      return "🏷️ Ho trovato la **" + car.brand + " " + car.model + "** nel nostro catalogo!\n\n" +
+        "💰 €" + parseInt(car.price).toLocaleString() + "\n" +
+        "📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n" +
+        "⛽ " + (car.fuel || 'N/D') + "\n\n" +
+        "Cosa vuoi sapere di quest'auto? Prezzo, KM, dettagli tecnici? 🤔";
+    }
+
+    return aiGetGenericResponse(message);
+  }
+
+  function aiGetGenericResponse(message) {
+    if (aiCurrentCarContext) {
+      return "🤔 Per la **" + aiCurrentCarContext.brand + " " + aiCurrentCarContext.model + "** posso aiutarti con:\n\n" +
+        "• 💰 Prezzo e finanziamenti\n" +
+        "• 🛣️ Chilometraggio\n" +
+        "• ⛽ Tipo di carburante\n" +
+        "• 📅 Anno e specifiche\n" +
+        "• 🚗 Prenotazione test drive\n\n" +
+        "Cosa ti interessa?";
+    }
+
+    return "🤔 Non ho capito perfettamente. Posso aiutarti con:\n\n" +
+      "• 🚗 Auto disponibili nel catalogo\n" +
+      "• 💰 Prezzi e finanziamenti\n" +
+      "• 📍 Dove siamo e orari\n" +
+      "• 🔄 Valutazione usato e permute\n" +
+      "• 📞 Contatti\n\n" +
+      "Prova a chiedermi: *'Quali auto avete?'* o *'Quanto costa la BMW X3?'* 😊";
+  }
+
+  // API Mistral
+  async function aiTestApiConnection() {
+    if (aiApiAvailable !== null) return aiApiAvailable;
+    try {
+      const response = await fetch(AI_CONFIG.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + AI_CONFIG.apiKey
+        },
+        body: JSON.stringify({
+          model: AI_CONFIG.model,
+          messages: [{ role: 'user', content: 'Ciao' }],
+          max_tokens: 5
+        })
+      });
+      aiApiAvailable = response.ok;
+      const badge = document.getElementById('ai-status-badge');
+      if (badge) {
+        badge.textContent = aiApiAvailable ? 'AI Attiva' : 'Assistente Locale';
+        badge.className = aiApiAvailable ? 'ai-status online' : 'ai-status offline';
+      }
+      return aiApiAvailable;
+    } catch (e) {
+      aiApiAvailable = false;
+      const badge = document.getElementById('ai-status-badge');
+      if (badge) {
+        badge.textContent = 'Assistente Locale';
+        badge.className = 'ai-status offline';
+      }
+      return false;
+    }
+  }
+
+  async function aiGetApiResponse(userMessage) {
+    const isAvailable = await aiTestApiConnection();
+    if (!isAvailable) throw new Error('API non disponibile');
+
+    let systemPrompt = "Sei l'assistente virtuale di Auto Demy, concessionaria a Mercato San Severino (SA). " +
+      "Rispondi in italiano, sii cordiale e professionale. " +
+      "Servizi: vendita auto nuove/usate/km0, finanziamenti, permute, valutazione usato, noleggio. " +
+      "Orari: Lun-Ven 9-19, Sab 9-13. Email: info@autodemy.it";
+
+    if (aiCurrentCarContext) {
+      systemPrompt += " Contesto auto: " + aiCurrentCarContext.brand + " " + aiCurrentCarContext.model + 
+        ", €" + parseInt(aiCurrentCarContext.price).toLocaleString() + 
+        ", " + (aiCurrentCarContext.year || 'N/D') + ".";
+    }
+
+    const response = await fetch(AI_CONFIG.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + AI_CONFIG.apiKey
+      },
+      body: JSON.stringify({
+        model: AI_CONFIG.model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...aiConversationHistory.slice(-4),
+          { role: 'user', content: userMessage }
+        ],
+        temperature: 0.7,
+        max_tokens: 400
+      })
+    });
+
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const data = await response.json();
+    return data.choices[0].message.content;
+  }
+
+  // UI FUNCTIONS
+  window.aiToggleChat = function(carContext) {
+    const panel = document.getElementById('ai-chat-panel');
+    const button = document.getElementById('ai-chat-button');
+
+    if (carContext) aiCurrentCarContext = carContext;
+    aiChatOpen = !aiChatOpen;
+
+    if (aiChatOpen) {
+      panel.classList.add('open');
+      button.style.display = 'none';
+
+      const messagesDiv = document.getElementById('ai-chat-messages');
+      if (messagesDiv.children.length === 0) {
+        aiShowWelcomeMessage();
+      }
+
+      aiTestApiConnection();
+      setTimeout(() => document.getElementById('ai-chat-input').focus(), 300);
+    } else {
+      panel.classList.remove('open');
+      button.style.display = 'flex';
+      aiCurrentCarContext = null;
+    }
+  };
+
+  function aiShowWelcomeMessage() {
+    let text = "Ciao! 👋 Sono l'**Assistente Virtuale** di Auto Demy.\n\n";
+
+    if (aiCurrentCarContext) {
+      text += "Stai guardando la **" + aiCurrentCarContext.brand + " " + aiCurrentCarContext.model + "** (" + (aiCurrentCarContext.year || 'N/D') + ").\n\n";
+      text += "💰 Prezzo: €" + parseInt(aiCurrentCarContext.price).toLocaleString() + "\n";
+      text += "🛣️ KM: " + (aiCurrentCarContext.km ? parseInt(aiCurrentCarContext.km).toLocaleString() : 'N/D') + "\n\n";
+      text += "Cosa vuoi sapere su quest'auto?";
+    } else {
+      text += "Sono qui per aiutarti! Ecco cosa posso fare:\n\n";
+      text += "• 🚗 Mostrarti le auto disponibili\n";
+      text += "• 💰 Informarti su prezzi e finanziamenti\n";
+      text += "• 📍 Dirti dove siamo e gli orari\n";
+      text += "• 🔄 Aiutarti con permute e usato\n\n";
+      text += "Cosa cerchi? 😊";
+    }
+
+    aiAddMessage('bot', text);
+    aiRenderQuickReplies();
+  }
+
+  function aiAddMessage(type, text) {
+    const messagesDiv = document.getElementById('ai-chat-messages');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'ai-message ai-message-' + type;
+
+    let html = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+
+    msgDiv.innerHTML = html;
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function aiShowTyping() {
+    const messagesDiv = document.getElementById('ai-chat-messages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'ai-message-typing';
+    typingDiv.id = 'ai-typing-indicator';
+    typingDiv.innerHTML = '<div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>';
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    aiIsTyping = true;
+  }
+
+  function aiHideTyping() {
+    const typing = document.getElementById('ai-typing-indicator');
+    if (typing) typing.remove();
+    aiIsTyping = false;
+  }
+
+  function aiRenderQuickReplies() {
+    const container = document.getElementById('ai-quick-replies');
+    container.innerHTML = '';
+
+    const replies = aiCurrentCarContext 
+      ? ["Dettagli tecnici", "Disponibilita", "Prezzo?", "Test drive", "Finanziamenti"]
+      : AI_QUICK_REPLIES;
+
+    replies.forEach(text => {
+      const btn = document.createElement('button');
+      btn.className = 'ai-quick-btn';
+      btn.textContent = text;
+      btn.onclick = () => {
+        document.getElementById('ai-chat-input').value = text;
+        aiSendMessage();
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  window.aiSendMessage = async function() {
+    const input = document.getElementById('ai-chat-input');
+    const sendBtn = document.getElementById('ai-chat-send');
+    const text = input.value.trim();
+
+    if (!text || aiIsTyping) return;
+
+    aiAddMessage('user', text);
+    input.value = '';
+    document.getElementById('ai-quick-replies').innerHTML = '';
+
+    aiConversationHistory.push({ role: 'user', content: text });
+    if (aiConversationHistory.length > AI_CONFIG.maxHistory) {
+      aiConversationHistory = aiConversationHistory.slice(-AI_CONFIG.maxHistory);
+    }
+
+    aiShowTyping();
+    sendBtn.disabled = true;
+
+    try {
+      let response;
+      try {
+        response = await aiGetApiResponse(text);
+      } catch (apiErr) {
+        response = aiGetLocalResponse(text);
+      }
+
+      aiHideTyping();
+      aiAddMessage('bot', response);
+      aiConversationHistory.push({ role: 'assistant', content: response });
+    } catch (error) {
+      aiHideTyping();
+      console.error('AI Error:', error);
+      aiAddMessage('bot', aiGetLocalResponse(text));
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  };
+
+  // Bottone nel modal
+  function aiAddModalButton() {
+    const modal = document.getElementById('car-modal');
+    if (!modal) return;
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          if (modal.classList.contains('flex')) {
+            setTimeout(() => {
+              const content = document.getElementById('modal-content');
+              if (!content) return;
+
+              const buttonsContainer = content.querySelector('.flex.gap-3');
+              if (buttonsContainer && !buttonsContainer.querySelector('.ai-modal-btn')) {
+                const aiBtn = document.createElement('button');
+                aiBtn.className = 'ai-modal-btn flex-1 py-3 bg-[#132848] text-white font-bold rounded-lg hover:bg-[#1a3a6b] transition border border-[#f5c518]';
+                aiBtn.innerHTML = '<i class="fas fa-robot mr-2"></i>Chiedi all\'Assistente';
+
+                const titleEl = content.querySelector('h2');
+                const priceEl = content.querySelector('.text-4xl');
+                const infoBoxes = content.querySelectorAll('.bg-gray-50');
+                const descEl = content.querySelector('.text-gray-600');
+
+                if (titleEl) {
+                  const titleText = titleEl.textContent.trim();
+                  const parts = titleText.split(' ');
+                  const brand = parts[0];
+                  const model = parts.slice(1).join(' ');
+
+                  const carData = {
+                    brand: brand,
+                    model: model,
+                    price: priceEl ? priceEl.textContent.replace(/[^0-9]/g, '') : '',
+                    year: infoBoxes[0] ? infoBoxes[0].querySelector('.font-bold')?.textContent : '',
+                    km: infoBoxes[1] ? infoBoxes[1].querySelector('.font-bold')?.textContent.replace(/[^0-9]/g, '') : '',
+                    fuel: infoBoxes[2] ? infoBoxes[2].querySelector('.font-bold')?.textContent : '',
+                    transmission: infoBoxes[3] ? infoBoxes[3].querySelector('.font-bold')?.textContent : '',
+                    power: infoBoxes[4] ? infoBoxes[4].querySelector('.font-bold')?.textContent : '',
+                    color: infoBoxes[5] ? infoBoxes[5].querySelector('.font-bold')?.textContent : '',
+                    description: descEl ? descEl.textContent : ''
+                  };
+
+                  aiBtn.onclick = () => {
+                    closeModal();
+                    setTimeout(() => aiToggleChat(carData), 300);
+                  };
+                }
+
+                buttonsContainer.appendChild(aiBtn);
+              }
+            }, 100);
+          }
+        }
+      });
+    });
+
+    observer.observe(modal, { attributes: true });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    aiAddModalButton();
+  });
+
+})();
 </script>
 </body>
 </html>
