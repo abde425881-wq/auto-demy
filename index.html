@@ -208,7 +208,6 @@ body { background: #f5f5f5; }
 .badge-sold { background: #dc3545; color: white; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
 
 .price { font-size: 22px; font-weight: 800; color: #000; }
-.price-old { font-size: 14px; color: #999; text-decoration: line-through; }
 
 .brand-circle { width: 80px; height: 80px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease; }
 .brand-circle:hover { transform: scale(1.15) rotate(-4deg); box-shadow: 0 10px 26px rgba(0,0,0,0.18); }
@@ -560,6 +559,7 @@ body {
 
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body class="min-h-screen">
 
@@ -569,6 +569,9 @@ body {
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
       <div class="flex items-center gap-4">
         <a href="#" class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-[#f5c518] rounded-lg flex items-center justify-center">
+            <i class="fas fa-car text-[#132848] text-lg"></i>
+          </div>
           <div>
             <span class="text-xl font-bold text-white tracking-tight">Auto Demy</span>
             <span class="block text-[10px] text-gray-400 tracking-[3px] uppercase">Concessionaria</span>
@@ -577,16 +580,18 @@ body {
       </div>
       <div class="flex items-center gap-8">
         <nav class="hidden md:flex items-center gap-8">
-          <a href="#" class="nav-link active">Esplora</a>
-          <a href="#" class="nav-link">Noleggio Eventi</a>
-          <a href="#" class="nav-link">Vendi</a>
-          <a href="#" class="nav-link">Chi Siamo</a>
+          
+          <a href="#eventi-section" class="nav-link" onclick="document.getElementById('eventi-section').scrollIntoView({behavior:'smooth'});return false;">Noleggio Eventi</a>
+          <a href="#permuta-section" class="nav-link" onclick="document.getElementById('permuta-section').scrollIntoView({behavior:'smooth'});return false;">Permuta</a>
+          <a href="#finanziamenti-section" class="nav-link" onclick="document.getElementById('finanziamenti-section').scrollIntoView({behavior:'smooth'});return false;">Finanziamenti</a>
+          <a href="#chi-siamo-section" class="nav-link" onclick="document.getElementById('chi-siamo-section').scrollIntoView({behavior:'smooth'});return false;">Chi Siamo</a>
         </nav>
         <div class="flex items-center gap-4">
-          <span class="text-white/60 text-sm">IT <i class="fas fa-chevron-down text-xs ml-1"></i></span>
-          <a href="admin.html" class="px-5 py-2 border border-white/20 rounded-lg text-white text-sm font-medium hover:bg-white/10 transition">
-            Accedi
-          </a>
+          <div class="hidden md:flex items-center gap-4 text-white/80 text-sm">
+          <a href="tel:0899829393" class="hover:text-[#f5c518] transition"><i class="fas fa-phone mr-1"></i>089 9829393</a>
+          <a href="tel:3386634298" class="hover:text-[#f5c518] transition"><i class="fas fa-mobile-alt mr-1"></i>338 6634298</a>
+        </div>
+          <!-- -->
         </div>
         <button class="md:hidden text-white text-xl" onclick="openMobileMenu()" id="hamburger-btn"><i class="fas fa-bars"></i></button>
       </div>
@@ -609,7 +614,7 @@ body {
       </h1>
 
       <p class="hero-subtitle" id="hero-subtitle">
-        Qualità, Passione, Affidabilità. Da oltre 10 anni al tuo servizio con trasparenza e professionalità.
+        Qualità, Passione, Affidabilità. Da oltre 25 anni al tuo servizio con trasparenza e professionalità.
       </p>
     </div>
   </div>
@@ -628,15 +633,7 @@ body {
   <div id="float-search-panel" class="float-search-panel">
     <select id="search-brand"><option value="">Tutte le marche</option></select>
     <select id="search-model"><option value="">Tutti i modelli</option></select>
-    <select id="search-price">
-      <option value="">Prezzo max</option>
-      <option value="5000">€ 5.000</option>
-      <option value="10000">€ 10.000</option>
-      <option value="15000">€ 15.000</option>
-      <option value="20000">€ 20.000</option>
-      <option value="30000">€ 30.000</option>
-      <option value="50000">€ 50.000</option>
-    </select>
+
     <button onclick="applySearch()"><i class="fas fa-search mr-2"></i>Cerca</button>
   </div>
 </div>
@@ -667,14 +664,7 @@ body {
           <button onclick="resetFilters()" class="text-sm text-gray-500 hover:text-black underline">Reset</button>
         </div>
 
-        <div class="filter-group">
-          <label>Prezzo min</label>
-          <input type="number" id="filter-price-min" placeholder="€ Min" onchange="applyFilters()">
-        </div>
-        <div class="filter-group">
-          <label>Prezzo max</label>
-          <input type="number" id="filter-price-max" placeholder="€ Max" onchange="applyFilters()">
-        </div>
+
         <div class="filter-group">
           <label>Anno da</label>
           <select id="filter-year" onchange="applyFilters()">
@@ -746,8 +736,6 @@ body {
             <span class="text-sm text-gray-500">Ordina per:</span>
             <select id="sort-by" onchange="applyFilters()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#f5c518]">
               <option value="newest">Più recenti</option>
-              <option value="price-asc">Prezzo: crescente</option>
-              <option value="price-desc">Prezzo: decrescente</option>
               <option value="year-desc">Anno: decrescente</option>
               <option value="km-asc">KM: crescente</option>
             </select>
@@ -782,9 +770,239 @@ body {
   <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
     <h2 class="text-4xl md:text-5xl font-black text-white mb-6 fade-up">Vendi la tua Auto</h2>
     <p class="text-xl text-gray-300 mb-8 fade-up">Valutazione gratuita e vendita rapida. Affidati ad Auto Demy!</p>
-    <button class="px-8 py-4 bg-[#f5c518] text-[#132848] font-bold text-lg rounded-xl hover:bg-[#d4a50b] transition shadow-lg fade-up">
+    <button onclick="openValutaModal()" class="px-8 py-4 bg-[#f5c518] text-[#132848] font-bold text-lg rounded-xl hover:bg-[#d4a50b] transition shadow-lg fade-up">
       <i class="fas fa-calculator mr-2"></i>Valuta la tua Auto
     </button>
+  </div>
+</section>
+
+<!-- VALUTAZIONE MODAL -->
+<div id="valuta-modal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4" onclick="if(event.target===event.currentTarget)closeValutaModal()">
+  <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto relative">
+    <button onclick="closeValutaModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 z-10">
+      <i class="fas fa-times text-xl text-gray-600"></i>
+    </button>
+    <div class="p-8">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-[#f5c518] rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-car text-2xl text-[#132848]"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900">Valuta la tua Auto</h3>
+        <p class="text-gray-500 text-sm mt-2">Compila il form e ti ricontattiamo subito!</p>
+      </div>
+      <form id="valuta-form" onsubmit="submitValutazione(event)">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Marca *</label>
+            <input type="text" name="marca" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="Es. Fiat, BMW, Audi...">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Modello *</label>
+            <input type="text" name="modello" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="Es. Panda, X3, A3...">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Anno *</label>
+              <input type="number" name="anno" required min="1900" max="2030" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="2020">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Chilometraggio *</label>
+              <input type="number" name="km" required min="0" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="50000">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Carburante</label>
+              <select name="carburante" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base bg-white">
+                <option value="">Seleziona</option>
+                <option value="Benzina">Benzina</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Ibrida">Ibrida</option>
+                <option value="Elettrica">Elettrica</option>
+                <option value="GPL">GPL</option>
+                <option value="Metano">Metano</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Cambio</label>
+              <select name="cambio" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base bg-white">
+                <option value="">Seleziona</option>
+                <option value="Manuale">Manuale</option>
+                <option value="Automatico">Automatico</option>
+                <option value="Sequenziale">Sequenziale</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Colore</label>
+            <input type="text" name="colore" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="Es. Nero, Bianco, Grigio...">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Condizione</label>
+            <select name="condizione" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base bg-white">
+              <option value="">Seleziona</option>
+              <option value="Ottima">Ottima</option>
+              <option value="Buona">Buona</option>
+              <option value="Discreta">Discreta</option>
+              <option value="Da sistemare">Da sistemare</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Descrizione / Note</label>
+            <textarea name="note" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base resize-none" placeholder="Optional: incidenti, lavori fatti, optional extra..."></textarea>
+          </div>
+          <hr class="border-gray-100">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Nome e Cognome *</label>
+            <input type="text" name="nome" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="Mario Rossi">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Telefono *</label>
+              <input type="tel" name="telefono" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="333 1234567">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+              <input type="email" name="email" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5c518] focus:border-transparent text-base" placeholder="mario@email.it">
+            </div>
+          </div>
+          <button type="submit" id="valuta-submit-btn" class="w-full py-4 bg-[#f5c518] text-[#132848] font-bold text-lg rounded-xl hover:bg-[#d4a50b] transition shadow-lg mt-2">
+            <i class="fas fa-paper-plane mr-2"></i>Invia Richiesta
+          </button>
+          <p id="valuta-message" class="text-center text-sm hidden"></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- AUTO DA EVENTI / NOLEGGIO -->
+<section class="py-20 bg-white" id="eventi-section">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-12 fade-up">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Auto per Eventi</h2>
+      <p class="text-gray-500 max-w-2xl mx-auto">Noleggio auto di prestigio per matrimoni, cerimonie e occasioni speciali. Soluzioni eleganti e personalizzate per rendere ogni momento unico.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Auto evento 1 -->
+      <div class="car-card fade-up">
+        <div class="relative overflow-hidden" style="height: 220px;">
+          <img src="https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=600&h=400&fit=crop" alt="Auto Matrimonio" class="w-full h-full object-cover">
+          <div class="absolute top-3 left-3"><span class="badge-new">Matrimonio</span></div>
+        </div>
+        <div class="p-5">
+          <h3 class="font-bold text-lg mb-1">Auto da Cerimonia</h3>
+          <p class="text-gray-500 text-sm mb-3">Eleganza e stile per il giorno piu importante. Auto classiche e moderne con conducente.</p>
+          <a href="tel:0899829393" class="inline-flex items-center gap-2 text-[#f5c518] font-semibold text-sm hover:text-[#d4a50b]"><i class="fas fa-phone"></i>Chiedi info</a>
+        </div>
+      </div>
+      <!-- Auto evento 2 -->
+      <div class="car-card fade-up">
+        <div class="relative overflow-hidden" style="height: 220px;">
+          <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0dbb?w=600&h=400&fit=crop" alt="Auto Eventi" class="w-full h-full object-cover">
+          <div class="absolute top-3 left-3"><span class="badge-reserved">Eventi</span></div>
+        </div>
+        <div class="p-5">
+          <h3 class="font-bold text-lg mb-1">Auto per Eventi Aziendali</h3>
+          <p class="text-gray-500 text-sm mb-3">Noleggio per convention, meeting e cene di gala. Professionalita e puntualita garantite.</p>
+          <a href="tel:0899829393" class="inline-flex items-center gap-2 text-[#f5c518] font-semibold text-sm hover:text-[#d4a50b]"><i class="fas fa-phone"></i>Chiedi info</a>
+        </div>
+      </div>
+      <!-- Auto evento 3 -->
+      <div class="car-card fade-up">
+        <div class="relative overflow-hidden" style="height: 220px;">
+          <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop" alt="Auto Servizi Fotografici" class="w-full h-full object-cover">
+          <div class="absolute top-3 left-3"><span class="badge-used">Servizi Fotografici</span></div>
+        </div>
+        <div class="p-5">
+          <h3 class="font-bold text-lg mb-1">Servizi Fotografici</h3>
+          <p class="text-gray-500 text-sm mb-3">Auto esclusive per shooting, spot pubblicitari e produzioni cinematografiche.</p>
+          <a href="tel:0899829393" class="inline-flex items-center gap-2 text-[#f5c518] font-semibold text-sm hover:text-[#d4a50b]"><i class="fas fa-phone"></i>Chiedi info</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERMUTA -->
+<section class="py-20 bg-[#f8f9fa]" id="permuta-section">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="fade-up">
+        <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&h=600&fit=crop" alt="Permuta Auto" class="rounded-2xl shadow-xl w-full h-80 object-cover">
+      </div>
+      <div class="fade-up">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-6">Permuta il Tuo Usato</h2>
+        <p class="text-gray-600 leading-relaxed mb-6">Valutiamo la tua auto in permuta per offrirti una soluzione comoda, veloce e vantaggiosa. Presso la nostra concessionaria puoi consegnare il tuo veicolo usato e utilizzarlo come parte del pagamento per la tua nuova auto, con una valutazione trasparente e realizzata in base alle reali condizioni del mezzo e alle quotazioni di mercato.</p>
+        <p class="text-gray-600 leading-relaxed mb-8">Il nostro obiettivo e semplificare ogni fase dell'acquisto, offrendoti un servizio serio, affidabile e su misura per le tue esigenze.</p>
+        <div class="flex gap-4 flex-wrap">
+          <button onclick="openValutaModal()" class="px-8 py-3 bg-[#f5c518] text-[#132848] font-bold rounded-xl hover:bg-[#d4a50b] transition shadow-lg">
+            <i class="fas fa-calculator mr-2"></i>Valuta la tua Auto
+          </button>
+          <a href="tel:0899829393" class="px-8 py-3 bg-[#132848] text-white font-bold rounded-xl hover:bg-[#1a3a6b] transition inline-flex items-center">
+            <i class="fas fa-phone mr-2"></i>Chiamaci
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINANZIAMENTI -->
+<section class="py-20 bg-white" id="finanziamenti-section">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="fade-up">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-6">Finanziamenti in Sede</h2>
+        <p class="text-gray-600 leading-relaxed mb-6">Presso la nostra concessionaria offriamo la possibilita di richiedere finanziamenti direttamente in sede, in collaborazione con <strong>Multibici Finanziamenti</strong>, per rendere l'acquisto della tua auto semplice, rapido e su misura.</p>
+        <p class="text-gray-600 leading-relaxed mb-8">Ti seguiamo con professionalita in ogni fase, proponendoti soluzioni flessibili, assistenza dedicata e massima trasparenza, cosi da aiutarti a scegliere la formula piu adatta alle tue esigenze con serenita e sicurezza.</p>
+        <div class="grid grid-cols-2 gap-4 mb-8">
+          <div class="bg-gray-50 p-4 rounded-xl text-center">
+            <i class="fas fa-percentage text-2xl text-[#f5c518] mb-2"></i>
+            <div class="font-bold text-sm">Tassi Competitivi</div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-xl text-center">
+            <i class="fas fa-handshake text-2xl text-[#f5c518] mb-2"></i>
+            <div class="font-bold text-sm">Assistenza Dedicata</div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-xl text-center">
+            <i class="fas fa-clock text-2xl text-[#f5c518] mb-2"></i>
+            <div class="font-bold text-sm">Pratica Veloce</div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-xl text-center">
+            <i class="fas fa-shield-alt text-2xl text-[#f5c518] mb-2"></i>
+            <div class="font-bold text-sm">Massima Trasparenza</div>
+          </div>
+        </div>
+        <a href="tel:0899829393" class="px-8 py-3 bg-[#f5c518] text-[#132848] font-bold rounded-xl hover:bg-[#d4a50b] transition shadow-lg inline-flex items-center">
+          <i class="fas fa-phone mr-2"></i>Richiedi Info
+        </a>
+      </div>
+      <div class="fade-up">
+        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&h=600&fit=crop" alt="Finanziamenti Auto" class="rounded-2xl shadow-xl w-full h-80 object-cover">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHI SIAMO -->
+<section class="py-20 bg-[#f8f9fa]" id="chi-siamo-section">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="fade-up">
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop" alt="Concessionaria Auto Demy" class="rounded-2xl shadow-xl w-full h-80 object-cover">
+      </div>
+      <div class="fade-up">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-6">Chi Siamo</h2>
+        <p class="text-gray-600 leading-relaxed mb-6"><strong>Concessionaria Auto Demy</strong> e un punto di riferimento per la vendita e il noleggio di auto nuove e usate, con un servizio attento, professionale e orientato alla soddisfazione del cliente.</p>
+        <p class="text-gray-600 leading-relaxed mb-6">Oltre al settore automobilistico, ci occupiamo anche del noleggio per eventi, matrimoni e occasioni speciali, offrendo soluzioni eleganti e personalizzate per rendere ogni momento ancora piu unico.</p>
+        <p class="text-gray-600 leading-relaxed mb-8">Nella nostra sede di <strong>Ciorani, a Mercato San Severino</strong>, accompagniamo ogni cliente con competenza, trasparenza e disponibilita, proponendo anche finanziamenti in sede e un'assistenza curata in ogni dettaglio.</p>
+        <div class="flex items-center gap-6 text-sm text-gray-500">
+          <span><i class="fas fa-map-marker-alt text-[#f5c518] mr-2"></i>Mercato San Severino (SA)</span>
+          <span><i class="fas fa-phone text-[#f5c518] mr-2"></i>089 9829393</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -800,28 +1018,28 @@ body {
       </div>
       <div>
         <h4>Auto</h4>
-        <a href="#">Cerca Auto</a>
-        <a href="#">Auto Nuove</a>
-        <a href="#">Auto Usate</a>
-        <a href="#">KM 0</a>
-        <a href="#">Elettriche</a>
+        <a href="#cars-section" onclick="document.getElementById('cars-section').scrollIntoView({behavior:'smooth'});return false;">Cerca Auto</a>
+        <a href="#cars-section" onclick="document.getElementById('cars-section').scrollIntoView({behavior:'smooth'});return false;">Auto Nuove</a>
+        <a href="#cars-section" onclick="document.getElementById('cars-section').scrollIntoView({behavior:'smooth'});return false;">Auto Usate</a>
+        <a href="#eventi-section" onclick="document.getElementById('eventi-section').scrollIntoView({behavior:'smooth'});return false;">Auto da Eventi</a>
       </div>
       <div>
         <h4>Servizi</h4>
-        <a href="#">Valutazione</a>
-        <a href="#">Finanziamento</a>
-        <a href="#">Garanzia</a>
-        <a href="#">Permuta</a>
+        <a href="#permuta-section" onclick="document.getElementById('permuta-section').scrollIntoView({behavior:'smooth'});return false;">Permuta</a>
+        <a href="#finanziamenti-section" onclick="document.getElementById('finanziamenti-section').scrollIntoView({behavior:'smooth'});return false;">Finanziamenti</a>
+        <a href="#eventi-section" onclick="document.getElementById('eventi-section').scrollIntoView({behavior:'smooth'});return false;">Noleggio Eventi</a>
+        <a href="tel:0899829393">Contattaci</a>
       </div>
       <div>
         <h4>Contatti</h4>
         <p class="text-gray-400 text-sm mb-2"><i class="fas fa-map-marker-alt mr-2 text-[#f5c518]"></i>Mercato San Severino (SA)</p>
-        <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2 text-[#f5c518]"></i>+39 XXX XXX XXXX</p>
-        <p class="text-gray-400 text-sm"><i class="fas fa-envelope mr-2 text-[#f5c518]"></i>info@autodemy.it</p>
+        <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2 text-[#f5c518]"></i><a href="tel:0899829393" class="hover:text-[#f5c518]">089 9829393</a></p>
+          <p class="text-gray-400 text-sm mb-2"><i class="fas fa-mobile-alt mr-2 text-[#f5c518]"></i><a href="tel:3386634298" class="hover:text-[#f5c518]">338 6634298</a></p>
+        <p class="text-gray-400 text-sm"><i class="fas fa-envelope mr-2 text-[#f5c518]"></i>autodemybiagio@libero.it</p>
         <div class="flex gap-3 mt-4">
-          <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#f5c518] hover:text-[#132848] transition"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#f5c518] hover:text-[#132848] transition"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#f5c518] hover:text-[#132848] transition"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://www.facebook.com/share/1EbQ5uXEdm/?mibextid=wwXIfr" target="_blank" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#f5c518] hover:text-[#132848] transition"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/concessionaria_auto_demy?igsh=a2dpZHgwcmx2azB3" target="_blank" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#f5c518] hover:text-[#132848] transition"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/393386634298" target="_blank" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#f5c518] hover:text-[#132848] transition"><i class="fab fa-whatsapp"></i></a>
         </div>
       </div>
     </div>
@@ -855,10 +1073,11 @@ body {
   <div id="mobile-menu-panel" onclick="event.stopPropagation()">
     <a href="#" onclick="closeMobileMenu(); document.getElementById('hero-3d').scrollIntoView({behavior:'smooth'}); return false;">Home</a>
     <a href="#" onclick="closeMobileMenu(); document.getElementById('cars-section').scrollIntoView({behavior:'smooth'}); return false;">Esplora Auto</a>
-    <a href="#" onclick="closeMobileMenu(); document.getElementById('parallax-vendi').scrollIntoView({behavior:'smooth'}); return false;">Vendi Auto</a>
-    <a href="#" onclick="closeMobileMenu(); return false;">Noleggio Eventi</a>
-    <a href="#" onclick="closeMobileMenu(); return false;">Chi Siamo</a>
-    <a href="admin.html" onclick="closeMobileMenu()">Accedi (Admin)</a>
+    <a href="#" onclick="closeMobileMenu(); document.getElementById('eventi-section').scrollIntoView({behavior:'smooth'}); return false;">Noleggio Eventi</a>
+    <a href="#" onclick="closeMobileMenu(); document.getElementById('permuta-section').scrollIntoView({behavior:'smooth'}); return false;">Permuta</a>
+    <a href="#" onclick="closeMobileMenu(); document.getElementById('finanziamenti-section').scrollIntoView({behavior:'smooth'}); return false;">Finanziamenti</a>
+    <a href="#" onclick="closeMobileMenu(); document.getElementById('chi-siamo-section').scrollIntoView({behavior:'smooth'}); return false;">Chi Siamo</a>
+    
   </div>
 </div>
 
@@ -1019,8 +1238,7 @@ function loadCars() {
 }
 
 function applyFilters() {
-  const priceMin = parseFloat(document.getElementById('filter-price-min').value) || 0;
-  const priceMax = parseFloat(document.getElementById('filter-price-max').value) || Infinity;
+  // Price filters removed
   const year = document.getElementById('filter-year').value;
   const fuel = document.getElementById('filter-fuel').value;
   const transmission = document.getElementById('filter-transmission').value;
@@ -1029,13 +1247,11 @@ function applyFilters() {
   const sortBy = document.getElementById('sort-by').value;
   const searchBrand = document.getElementById('search-brand').value;
   const searchModel = document.getElementById('search-model').value;
-  const searchPrice = document.getElementById('search-price').value;
 
   filteredCars = allCars.filter(car => {
     const carPrice = parseFloat(car.price) || 0;
     const carYear = parseInt(car.year) || 0;
     const carKm = parseInt(car.km) || 0;
-    if (carPrice < priceMin || carPrice > priceMax) return false;
     if (year && carYear < parseInt(year)) return false;
     if (fuel && car.fuel !== fuel) return false;
     if (transmission && car.transmission !== transmission) return false;
@@ -1043,14 +1259,11 @@ function applyFilters() {
     if (status && car.status !== status) return false;
     if (searchBrand && (!car.brand || car.brand.toLowerCase() !== searchBrand.toLowerCase())) return false;
     if (searchModel && !car.model?.toLowerCase().includes(searchModel.toLowerCase())) return false;
-    if (searchPrice && carPrice > parseFloat(searchPrice)) return false;
     return true;
   });
 
   filteredCars.sort((a, b) => {
     switch(sortBy) {
-      case 'price-asc': return (parseFloat(a.price)||0) - (parseFloat(b.price)||0);
-      case 'price-desc': return (parseFloat(b.price)||0) - (parseFloat(a.price)||0);
       case 'year-desc': return (parseInt(b.year)||0) - (parseInt(a.year)||0);
       case 'km-asc': return (parseInt(a.km)||0) - (parseInt(b.km)||0);
       default: return (b.createdAt||0) - (a.createdAt||0);
@@ -1072,7 +1285,7 @@ function filterByBrand(brand) {
 }
 
 function resetFilters() {
-  ['filter-price-min','filter-price-max','filter-year','filter-fuel','filter-transmission','filter-km','filter-status','search-brand','search-model','search-price'].forEach(id => document.getElementById(id).value = '');
+  ['filter-year','filter-fuel','filter-transmission','filter-km','filter-status','search-brand','search-model'].forEach(id => document.getElementById(id).value = '');
   applyFilters();
 }
 
@@ -1084,7 +1297,7 @@ function renderCars() {
   empty.classList.add('hidden');
   grid.innerHTML = filteredCars.map((car, index) => {
     const statusBadge = car.status === 'nuovo' ? '<span class="badge-new">Nuovo</span>' : car.status === 'riservata' ? '<span class="badge-reserved">Riservata</span>' : car.status === 'venduta' ? '<span class="badge-sold">Venduta</span>' : '<span class="badge-used">Usato</span>';
-    const priceOld = car.oldPrice ? `<span class="price-old">€ ${parseInt(car.oldPrice).toLocaleString()}</span>` : '';
+    const priceOld = '';
     const image = car.image || (car.gallery && car.gallery[0]) ? car.gallery[0] : 'https://via.placeholder.com/400x250?text=No+Image';
     return `<div class="car-card fade-up" onclick="openModal('${car.id}')">
       <div class="relative overflow-hidden" style="height: 200px;">
@@ -1094,7 +1307,7 @@ function renderCars() {
       </div>
       <div class="p-4">
         <h3 class="font-bold text-lg leading-tight">${car.brand} ${car.model}</h3>
-        <div class="mb-3"><span class="price">€ ${parseInt(car.price).toLocaleString()}</span>${priceOld}</div>
+        <div class="mb-3"><span class="price text-sm" style="color:#666;font-weight:600;">Contattaci per il prezzo</span></div>
         <div class="grid grid-cols-2 gap-2 text-sm text-gray-500 mb-3">
           <div><i class="fas fa-calendar-alt text-gray-400 w-4"></i> ${car.year || 'N/D'}</div>
           <div><i class="fas fa-tachometer-alt text-gray-400 w-4"></i> ${car.km ? parseInt(car.km).toLocaleString() + ' km' : 'N/D'}</div>
@@ -1138,7 +1351,7 @@ function openModal(carId) {
       <div class="p-6 md:border-l border-gray-100">
         <div class="flex items-center gap-2 mb-2">${statusBadge}</div>
         <h2 class="text-3xl font-black mb-2">${car.brand} ${car.model}</h2>
-        <p class="text-4xl font-black text-[#f5c518] mb-6">€ ${parseInt(car.price).toLocaleString()}</p>
+        <p class="text-2xl font-black text-[#f5c518] mb-6"><i class="fas fa-phone-alt mr-2"></i>Contattaci per il prezzo</p>
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="bg-gray-50 p-3 rounded-lg"><div class="text-xs text-gray-500">Anno</div><div class="font-bold">${car.year || 'N/D'}</div></div>
           <div class="bg-gray-50 p-3 rounded-lg"><div class="text-xs text-gray-500">KM</div><div class="font-bold">${car.km ? parseInt(car.km).toLocaleString() : 'N/D'}</div></div>
@@ -1152,8 +1365,8 @@ function openModal(carId) {
           <p class="text-gray-600 text-sm leading-relaxed">${car.description || 'Nessuna descrizione disponibile.'}</p>
         </div>
         <div class="flex gap-3">
-          <button class="flex-1 py-3 bg-[#f5c518] text-[#132848] font-bold rounded-lg hover:bg-[#d4a50b] transition"><i class="fas fa-phone mr-2"></i>Chiama Ora</button>
-          <button class="flex-1 py-3 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition"><i class="fas fa-envelope mr-2"></i>Contatta</button>
+          <a href="tel:0899829393" class="flex-1 py-3 bg-[#f5c518] text-[#132848] font-bold rounded-lg hover:bg-[#d4a50b] transition text-center"><i class="fas fa-phone mr-2"></i>Chiama Ora</a>
+          <a href="mailto:autodemybiagio@libero.it" class="flex-1 py-3 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition text-center"><i class="fas fa-envelope mr-2"></i>Contatta</a>
         </div>
       </div>
     </div>`;
@@ -1295,6 +1508,75 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'ArrowLeft' && lb && lb.classList.contains('active')) lightboxPrev();
   if (e.key === 'ArrowRight' && lb && lb.classList.contains('active')) lightboxNext();
 });
+
+// ===== VALUTAZIONE FORM =====
+function openValutaModal() {
+  document.getElementById('valuta-modal').classList.remove('hidden');
+  document.getElementById('valuta-modal').classList.add('flex');
+  document.body.style.overflow = 'hidden';
+}
+function closeValutaModal() {
+  document.getElementById('valuta-modal').classList.add('hidden');
+  document.getElementById('valuta-modal').classList.remove('flex');
+  var lb = document.getElementById('lightbox');
+  var aiPanel = document.getElementById('ai-chat-panel');
+  if ((!lb || !lb.classList.contains('active')) && (!aiPanel || !aiPanel.classList.contains('open'))) {
+    document.body.style.overflow = '';
+  }
+}
+function submitValutazione(e) {
+  e.preventDefault();
+  var btn = document.getElementById('valuta-submit-btn');
+  var msg = document.getElementById('valuta-message');
+  var form = document.getElementById('valuta-form');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Invio in corso...';
+
+  var formData = new FormData(form);
+  var data = {
+    marca: formData.get('marca'),
+    modello: formData.get('modello'),
+    anno: formData.get('anno'),
+    km: formData.get('km'),
+    carburante: formData.get('carburante'),
+    cambio: formData.get('cambio'),
+    colore: formData.get('colore'),
+    condizione: formData.get('condizione'),
+    note: formData.get('note'),
+    nome: formData.get('nome'),
+    telefono: formData.get('telefono'),
+    email: formData.get('email'),
+    timestamp: Date.now(),
+    data: new Date().toLocaleString('it-IT')
+  };
+
+  db.ref('valutazioni').push(data)
+    .then(function() {
+      msg.textContent = 'Richiesta inviata con successo! Ti contatteremo presto.';
+      msg.className = 'text-center text-sm text-green-600 font-semibold mt-2';
+      msg.classList.remove('hidden');
+      form.reset();
+      btn.innerHTML = '<i class="fas fa-check mr-2"></i>Inviato!';
+      btn.classList.remove('bg-[#f5c518]', 'text-[#132848]');
+      btn.classList.add('bg-green-500', 'text-white');
+      setTimeout(function() {
+        closeValutaModal();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Invia Richiesta';
+        btn.classList.add('bg-[#f5c518]', 'text-[#132848]');
+        btn.classList.remove('bg-green-500', 'text-white');
+        msg.classList.add('hidden');
+      }, 2500);
+    })
+    .catch(function(err) {
+      console.error(err);
+      msg.textContent = 'Errore nell\'invio. Riprova o chiamaci al 089 9829393.';
+      msg.className = 'text-center text-sm text-red-600 font-semibold mt-2';
+      msg.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Invia Richiesta';
+    });
+}
 </script>
 
 <!-- ==================== AI CHATBOT WIDGET ==================== -->
@@ -1446,19 +1728,16 @@ document.addEventListener('keydown', function(e) {
     { patterns: ['noleggio', 'affitto', 'rent', 'evento', 'matrimonio'],
       response: "🎩 **Noleggio Auto per Eventi:**\n\nAuto di prestigio per occasioni speciali:\n\n• Matrimoni\n• Cerimonie\n• Eventi aziendali\n• Servizi fotografici\n\nContattaci per un preventivo personalizzato! 📞" },
     { patterns: ['contatti', 'telefono', 'email', 'mail', 'numero', 'chiamare', 'scrivere', 'whatsapp'],
-      response: "📞 **Contatti Auto Demy:**\n\n• 📧 Email: info@autodemy.it\n• 📍 Indirizzo: Mercato San Severino (SA)\n• 🕐 Orari: Lun-Ven 9-19, Sab 9-13\n\nPuoi anche passare direttamente in concessionaria!" },
+      response: "📞 **Contatti Auto Demy:**\n\n• 📧 Email: autodemybiagio@libero.it\n• 📍 Indirizzo: Mercato San Severino (SA)\n• 🕐 Orari: Lun-Ven 9-19, Sab 9-13\n\nPuoi anche passare direttamente in concessionaria!" },
     { patterns: ['grazie', 'thanks', 'grazie mille', 'ottimo', 'perfetto', 'bravo'],
       response: "Grazie a te! 😊 Se hai altre domande, sono sempre qui per aiutarti. Buona giornata e buona ricerca dell'auto perfetta! 🚗✨" },
     { patterns: ['prezzo', 'costa', 'quanto costa', 'quanto e', 'euro', 'soldi', 'economica', 'costoso', 'prezzi'],
       response: function(msg) {
         const car = aiGetContextCar(msg);
         if (car) {
-          return "💰 Il prezzo della **" + car.brand + " " + car.model + "** e di **€" + parseInt(car.price).toLocaleString() + "**.\n\n" +
-            (car.oldPrice ? "💵 Prezzo originale: ~~€" + parseInt(car.oldPrice).toLocaleString() + "~~\n" : "") +
-            "\nIl prezzo e trattabile in concessionaria. Possiamo valutare permute e offrirti soluzioni di finanziamento personalizzate!\n\nVuoi prenotare un test drive? 🚗";
+          return "💰 Per la **" + car.brand + " " + car.model + "** contattaci per il prezzo!\n\n• 📞 089 9829393\n• 📱 338 6634298\n• 📧 autodemybiagio@libero.it\n\nPossiamo valutare permute e offrirti finanziamenti personalizzati.";
         }
-        return "💰 I prezzi variano in base al modello. Nel nostro catalogo trovi auto a partire da pochi migliaia di euro fino a vetture di lusso.\n\n" +
-          "**Dimmi quale auto ti interessa** (es. 'quanto costa la BMW X3?') e ti dico il prezzo esatto!\n\nOppure visita il catalogo per vedere tutti i prezzi aggiornati. 😉";
+        return "**Dimmi quale auto ti interessa** (es. 'vorrei info sulla BMW X3') e ti diro tutti i dettagli!\n\nPer i prezzi contattaci: 📞 089 9829393 | 📱 338 6634298";
       } },
     { patterns: ['km', 'chilometri', 'chilometraggio', 'percorsi', 'quanti km'],
       response: function(msg) {
@@ -1492,7 +1771,7 @@ document.addEventListener('keydown', function(e) {
         if (car) {
           let r = "📋 **Dettagli " + car.brand + " " + car.model + ":**\n\n";
           if (car.year) r += "📅 Anno: " + car.year + "\n";
-          if (car.price) r += "💰 Prezzo: €" + parseInt(car.price).toLocaleString() + "\n";
+          r += "💰 Prezzo: **Contattaci** 📞 089 9829393\n";
           if (car.km) r += "🛣️ KM: " + parseInt(car.km).toLocaleString() + "\n";
           if (car.fuel) r += "⛽ Carburante: " + car.fuel + "\n";
           if (car.transmission) r += "⚙️ Cambio: " + car.transmission + "\n";
@@ -1517,7 +1796,7 @@ document.addEventListener('keydown', function(e) {
         const lowerMsg = msg.toLowerCase();
         const car = aiFindCarInCatalog(msg);
         if (car) {
-          return "🏷️ **" + car.brand + " " + car.model + "**\n\n💰 €" + parseInt(car.price).toLocaleString() + "\n📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n⛽ " + (car.fuel || 'N/D') + " | ⚙️ " + (car.transmission || 'N/D') + "\n\nClicca sulla card nel catalogo per tutti i dettagli! 👆";
+          return "🏷️ **" + car.brand + " " + car.model + "**\n\n💰 **Contattaci per il prezzo** 📞 089 9829393\n📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n⛽ " + (car.fuel || 'N/D') + " | ⚙️ " + (car.transmission || 'N/D') + "\n\nClicca sulla card nel catalogo per tutti i dettagli! 👆";
         }
         const brands = ['BMW', 'Mercedes', 'Audi', 'Volkswagen', 'Fiat', 'Ford', 'Toyota', 'Jeep', 'Peugeot', 'Alfa', 'Maserati'];
         const found = brands.find(b => lowerMsg.includes(b.toLowerCase()));
@@ -1525,7 +1804,7 @@ document.addEventListener('keydown', function(e) {
           const brandCars = allCars.filter(c => c.brand && c.brand.toLowerCase() === found.toLowerCase());
           if (brandCars.length > 0) {
             let r = "🏷️ **Auto " + found + " disponibili:**\n\n";
-            brandCars.slice(0, 3).forEach((c, i) => { r += (i+1) + ". **" + c.brand + " " + c.model + "** (" + (c.year || 'N/D') + ") - €" + parseInt(c.price).toLocaleString() + "\n"; });
+            brandCars.slice(0, 3).forEach((c, i) => { r += (i+1) + ". **" + c.brand + " " + c.model + "** (" + (c.year || 'N/D') + ")\n"; });
             if (brandCars.length > 3) r += "\n...e altre " + (brandCars.length - 3) + "!";
             r += "\n\nClicca sul catalogo per vederle tutte! 👆";
             return r;
@@ -1534,7 +1813,7 @@ document.addEventListener('keydown', function(e) {
         return "🏷️ Abbiamo diverse auto di questa marca nel catalogo! Usa i filtri o cerca direttamente per marca.";
       } },
     { patterns: ['aiuto', 'help', 'come funziona', 'cosa fai', 'chi sei', 'cosa sai fare'],
-      response: "🤖 **Cosa posso fare per te:**\n\n• 🚗 Mostrarti le auto disponibili nel catalogo\n• 💰 Rispondere a domande su prezzi e specifiche\n• 📍 Informarti su orari, ubicazione e contatti\n• 🔄 Spiegarti i servizi di finanziamento e permuta\n• 🛡️ Aiutarti con la valutazione del tuo usato\n\n**Prova a chiedermi:**\n• 'Quali auto avete?'\n• 'Quanto costa la BMW X3?'\n• 'Orari di apertura?'\n• 'Finanziamenti?'" },
+      response: "🤖 **Cosa posso fare per te:**\n\n• 🚗 Mostrarti le auto disponibili nel catalogo\n• 📞 Info e contatti: 089 9829393 / 338 6634298\n• 📍 Dove siamo e orari\n• 🔄 Valutazione del tuo usato\n• 💰 Finanziamenti e permute\n\n**Scrivimi pure!**" },
     { patterns: ['colore', 'colori', 'verniciatura'],
       response: function(msg) {
         const car = aiGetContextCar(msg);
@@ -1566,7 +1845,7 @@ document.addEventListener('keydown', function(e) {
     let response = "🚗 **Auto disponibili nel catalogo:**\n\n";
     available.forEach((car, i) => {
       response += (i+1) + ". **" + car.brand + " " + car.model + "**\n";
-      response += "   💰 €" + parseInt(car.price).toLocaleString() + " | 📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n\n";
+      response += "   💰 Contattaci | 📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n\n";
     });
     response += "Totale auto: **" + allCars.length + "**\n\nClicca su un'auto per i dettagli completi! 👆";
     return response;
@@ -1584,7 +1863,7 @@ document.addEventListener('keydown', function(e) {
     }
     const car = aiFindCarInCatalog(message);
     if (car) {
-      return "🏷️ Ho trovato la **" + car.brand + " " + car.model + "** nel nostro catalogo!\n\n💰 €" + parseInt(car.price).toLocaleString() + "\n📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n⛽ " + (car.fuel || 'N/D') + "\n\nCosa vuoi sapere di quest'auto? Prezzo, KM, dettagli tecnici? 🤔";
+      return "🏷️ Ho trovato la **" + car.brand + " " + car.model + "** nel nostro catalogo!\n\n💰 **Contattaci per il prezzo** 📞 089 9829393\n📅 " + (car.year || 'N/D') + " | 🛣️ " + (car.km ? parseInt(car.km).toLocaleString() + " km" : 'N/D') + "\n⛽ " + (car.fuel || 'N/D') + "\n\nCosa vuoi sapere di quest'auto? Prezzo, KM, dettagli tecnici? 🤔";
     }
     return aiGetGenericResponse(message);
   }
@@ -1593,7 +1872,7 @@ document.addEventListener('keydown', function(e) {
     if (aiCurrentCarContext) {
       return "🤔 Per la **" + aiCurrentCarContext.brand + " " + aiCurrentCarContext.model + "** posso aiutarti con:\n\n• 💰 Prezzo e finanziamenti\n• 🛣️ Chilometraggio\n• ⛽ Tipo di carburante\n• 📅 Anno e specifiche\n• 🚗 Prenotazione test drive\n\nCosa ti interessa?";
     }
-    return "🤔 Non ho capito perfettamente. Posso aiutarti con:\n\n• 🚗 Auto disponibili nel catalogo\n• 💰 Prezzi e finanziamenti\n• 📍 Dove siamo e orari\n• 🔄 Valutazione usato e permute\n• 📞 Contatti\n\nProva a chiedermi: *'Quali auto avete?'* o *'Quanto costa la BMW X3?'* 😊";
+    return "🤔 Non ho capito perfettamente. Posso aiutarti con:\n\n• 🚗 Auto disponibili nel catalogo\n• 📍 Dove siamo e orari\n• 🔄 Valutazione usato e permute\n• 📞 Contatti: 089 9829393 / 338 6634298\n\nProva a chiedermi: *'Quali auto avete?'* o *'Dimmi la BMW X3'* 😊";
   }
 
   async function aiTestApiConnection() {
@@ -1622,9 +1901,9 @@ document.addEventListener('keydown', function(e) {
   async function aiGetApiResponse(userMessage) {
     const isAvailable = await aiTestApiConnection();
     if (!isAvailable) throw new Error('API non disponibile');
-    let systemPrompt = "Sei l'assistente virtuale di Auto Demy, concessionaria a Mercato San Severino (SA). Rispondi in italiano, sii cordiale e professionale. Servizi: vendita auto nuove/usate/km0, finanziamenti, permute, valutazione usato, noleggio. Orari: Lun-Ven 9-19, Sab 9-13. Email: info@autodemy.it";
+    let systemPrompt = "Sei l'assistente virtuale di Auto Demy, concessionaria a Mercato San Severino (SA). Rispondi in italiano, sii cordiale e professionale. Servizi: vendita auto nuove/usate/km0, finanziamenti, permute, valutazione usato, noleggio. Orari: Lun-Ven 9-19, Sab 9-13. Email: autodemybiagio@libero.it";
     if (aiCurrentCarContext) {
-      systemPrompt += " Contesto auto: " + aiCurrentCarContext.brand + " " + aiCurrentCarContext.model + ", €" + parseInt(aiCurrentCarContext.price).toLocaleString() + ", " + (aiCurrentCarContext.year || 'N/D') + ".";
+      systemPrompt += " Contesto auto: " + aiCurrentCarContext.brand + " " + aiCurrentCarContext.model + ", anno " + (aiCurrentCarContext.year || 'N/D') + ". Non menzionare prezzi, di' di contattare la concessionaria.";
     }
     const response = await fetch(AI_CONFIG.endpoint, {
       method: 'POST',
@@ -1663,11 +1942,11 @@ document.addEventListener('keydown', function(e) {
     let text = "Ciao! 👋 Sono l'**Assistente Virtuale** di Auto Demy.\n\n";
     if (aiCurrentCarContext) {
       text += "Stai guardando la **" + aiCurrentCarContext.brand + " " + aiCurrentCarContext.model + "** (" + (aiCurrentCarContext.year || 'N/D') + ").\n\n";
-      text += "💰 Prezzo: €" + parseInt(aiCurrentCarContext.price).toLocaleString() + "\n";
+      text += "💰 Prezzo: contattaci per info 📞 089 9829393\n";
       text += "🛣️ KM: " + (aiCurrentCarContext.km ? parseInt(aiCurrentCarContext.km).toLocaleString() : 'N/D') + "\n\n";
       text += "Cosa vuoi sapere su quest'auto?";
     } else {
-      text += "Sono qui per aiutarti! Ecco cosa posso fare:\n\n• 🚗 Mostrarti le auto disponibili\n• 💰 Informarti su prezzi e finanziamenti\n• 📍 Dirti dove siamo e gli orari\n• 🔄 Aiutarti con permute e usato\n\nCosa cerchi? 😊";
+      text += "Sono qui per aiutarti! Ecco cosa posso fare:\n\n• 🚗 Mostrarti le auto disponibili\n• 📍 Dirti dove siamo e gli orari\n• 🔄 Aiutarti con permute e usato\n• 📞 Info: 089 9829393 / 338 6634298\n\nCosa cerchi? 😊";
     }
     aiAddMessage('bot', text);
     aiRenderQuickReplies();
@@ -1768,12 +2047,12 @@ document.addEventListener('keydown', function(e) {
                   const carData = {
                     brand: brand, model: model,
                     price: priceEl ? priceEl.textContent.replace(/[^0-9]/g, '') : '',
-                    year: infoBoxes[0] ? infoBoxes[0].querySelector('.font-bold')?.textContent : '',
-                    km: infoBoxes[1] ? infoBoxes[1].querySelector('.font-bold')?.textContent.replace(/[^0-9]/g, '') : '',
-                    fuel: infoBoxes[2] ? infoBoxes[2].querySelector('.font-bold')?.textContent : '',
-                    transmission: infoBoxes[3] ? infoBoxes[3].querySelector('.font-bold')?.textContent : '',
-                    power: infoBoxes[4] ? infoBoxes[4].querySelector('.font-bold')?.textContent : '',
-                    color: infoBoxes[5] ? infoBoxes[5].querySelector('.font-bold')?.textContent : '',
+                    year: infoBoxes[0] && infoBoxes[0].querySelector('.font-bold') ? infoBoxes[0].querySelector('.font-bold').textContent : '',
+                    km: infoBoxes[1] && infoBoxes[1].querySelector('.font-bold') ? infoBoxes[1].querySelector('.font-bold').textContent.replace(/[^0-9]/g, '') : '',
+                    fuel: infoBoxes[2] && infoBoxes[2].querySelector('.font-bold') ? infoBoxes[2].querySelector('.font-bold').textContent : '',
+                    transmission: infoBoxes[3] && infoBoxes[3].querySelector('.font-bold') ? infoBoxes[3].querySelector('.font-bold').textContent : '',
+                    power: infoBoxes[4] && infoBoxes[4].querySelector('.font-bold') ? infoBoxes[4].querySelector('.font-bold').textContent : '',
+                    color: infoBoxes[5] && infoBoxes[5].querySelector('.font-bold') ? infoBoxes[5].querySelector('.font-bold').textContent : '',
                     description: descEl ? descEl.textContent : ''
                   };
                   aiBtn.onclick = () => { closeModal(); setTimeout(() => aiToggleChat(carData), 300); };
